@@ -12,7 +12,7 @@ Mmax=3n(n-1)/2=O(n^2)
 #coding=utf-8
 import random
 
-def bubblesort(target):
+def sort(target):
     length = len(target)
     # print(length)
     while length > 0: 
@@ -24,7 +24,7 @@ def bubblesort(target):
             cur += 1
     return target
     
-def bubblesort1(target):
+def sort1(target):
     length = len(target)
     # print(target)
     for i in range(length - 1):
@@ -35,7 +35,7 @@ def bubblesort1(target):
                 target[j], target[j+1] = target[j+1], target[j]
     return target
 
-def bubblesort2(target):
+def sort2(target):
     length = len(target)
     for i in range(length - 1):
         bSwap = False
@@ -53,13 +53,13 @@ if __name__ == '__main__':
     print("冒泡排序")
     a = [random.randint(1,1000) for i in range(10)]
     print("\nin=", a)
-    print(bubblesort(a))
+    print(sort(a))
 
     a = [random.randint(1,1000) for i in range(10)]
     print("\nin=", a)
-    print(bubblesort1(a))
+    print(sort1(a))
 
     a = [random.randint(1,1000) for i in range(10)]
     print("\nin=", a)
-    print(bubblesort2(a))
+    print(sort2(a))
  
