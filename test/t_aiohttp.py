@@ -1,6 +1,7 @@
 import aiohttp
 import asyncio
 
+
 async def get(url):
     async with aiohttp.ClientSession() as session:
         async with session.get(url) as resp:
@@ -14,4 +15,4 @@ tasks = [                           # 初始化任务列表
     get("http://zhushou.360.cn/detail/index/soft_id/705490")
 ]
 loop.run_until_complete(asyncio.wait(tasks))    # 执行任务
-loop.close()        
+loop.close()
