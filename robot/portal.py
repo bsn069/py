@@ -14,6 +14,9 @@ class Portal(object):
         self._port = 9252
 
     async def run(self):
-        await session.connect(self._host, self._port, self._loop)
+        _session = await session.connect(self._host, self._port, self._loop)
+        _session.send(b"11111111111111111")
+        await _session.wait_all_send()
+        _session.close()
  
 
