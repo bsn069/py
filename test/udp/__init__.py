@@ -18,14 +18,20 @@ def main():
     logging.info("")
     import echo_server
     echo_server.start()
-    import echo_client
-    echo_client.start()
-    echo_client.start()
-    echo_client.start(msg=b'end')
-    echo_client.start()
-    echo_client.start()
-    echo_client.start()
-    echo_client.start()
+    echo_server.start(port=10001)
+    echo_server.start(port=10002)
+    echo_server.start(port=10003)
+    echo_server.start(port=10004)
+    # import echo_client
+    # echo_client.start()
+    # echo_client.start()
+    # echo_client.start(msg=b'end')
+    # echo_client.start()
+    # echo_client.start()
+    # echo_client.start()
+    # echo_client.start()
+    import echo_client0
+    echo_client0.start()
 
 if __name__ == '__main__':
     logging.info('作为主程序运行')
