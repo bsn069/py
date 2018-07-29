@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+# -*- coding: UTF-8 -*-
 '''
 ref https://www.cnblogs.com/zingp/p/6537841.html
 一次归并：将现有的列表分为左右两段，将两段里的元素逐一比较，小的就放入新的列表中。比较结束后，新的列表就是排好序的。

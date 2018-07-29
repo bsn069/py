@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+# -*- coding: UTF-8 -*-
 '''
 ref https://www.cnblogs.com/zingp/p/6537841.html
 选择排序法：每一次从待排序的数据元素中选出最小（或最大）的一个元素，存放到序列的起始位置，直到全部排完。

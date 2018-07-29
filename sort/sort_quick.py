@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+# -*- coding: UTF-8 -*-
 '''
 ref https://www.cnblogs.com/zingp/p/6537841.html
 取一个元素p（通常是第一个元素，但是这是比较糟糕的选择），使元素p归位（把p右边比p小的元素都放在它左边，在把空缺位置的左边比p大的元素放在p右边）；

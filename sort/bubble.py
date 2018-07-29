@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+# -*- coding: UTF-8 -*-
 '''
 ref https://blog.csdn.net/minxihou/article/details/51738013
 这里外层循环用来控制这个序列长度和比较次数。第二层循环用来交换。
@@ -9,7 +11,6 @@ Mmax=3n(n-1)/2=O(n^2)
 所以，冒泡算法总的平均时间复杂度为O（n^2）
 '''
 
-#coding=utf-8
 import random
 
 def sort(target):

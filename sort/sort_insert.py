@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+# -*- coding: UTF-8 -*-
 '''
 ref https://www.cnblogs.com/zingp/p/6537841.html
 列表被分为有序区和无序区两个部分。最初有序区只有一个元素。

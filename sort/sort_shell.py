@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+# -*- coding: UTF-8 -*-
 '''
 ref https://www.cnblogs.com/zingp/p/6537841.html
 希尔排序是一种分组插入排序算法。

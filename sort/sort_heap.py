@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+# -*- coding: UTF-8 -*-
 '''
 ref https://www.cnblogs.com/zingp/p/6537841.html
 步骤：
@@ -11,8 +13,7 @@ ref https://www.cnblogs.com/zingp/p/6537841.html
 稳定性：不稳定
 特点：通常都比快排慢
 '''
-
-#coding=utf-8
+ 
 import random
 
 # [rootIndex, endIndex]
