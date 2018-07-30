@@ -1,25 +1,22 @@
 #!/usr/bin/env python3
 # -*- coding: UTF-8 -*-
 
+import logging
+import asyncio
+from bsn.agent_proxy.agent_proxy import CAgentProxy
 
-class CAgentProxy(object):
+logging.basicConfig(level = logging.INFO, format = '%(asctime)s %(levelname)s %(filename)s:%(lineno)d(%(funcName)s) %(message)s')
 
-    def __init__(self, strHost, u16Port):
-        self.__host = None
-        self.__port = None
+async def imp(loop):
+    logging.info("{}".format(loop))
 
-    def init(self):
-        return True
+    agent_proxy = CAgentProxy()
+    await agent_proxy.run()
 
-    def start(self):
-        return True
+    await asyncio.sleep(2)
+    loop.stop()
 
-    def loop(self):
-        return True
-
-    def stop(self):
-        return True
-
-    def uninit(self):
-        return True
-
+def main():
+    loop = asyncio.get_event_loop()
+    asyncio.ensure_future(imp(loop))
+    loop.run_forever()
