@@ -2,7 +2,8 @@
 # -*- coding: UTF-8 -*-
 
 import unittest
-from bsn.common import ip_port
+from bsn.common import port
+from bsn.common import err
 
 
 class Test(unittest.TestCase):
@@ -14,18 +15,21 @@ class Test(unittest.TestCase):
         pass
 
     def test_2_(self):
-        with self.assertRaises(ip_port.CIPPortErr):
-            ip_port.CPort(0)
-        with self.assertRaises(ip_port.CIPPortErr):
-            ip_port.CPort(65536)
-        with self.assertRaises(ip_port.CIPPortErr):
-            ip_port.CPort("2344")
+        with self.assertRaises(err.ErrParamType):
+            port.CPort(None)
+        with self.assertRaises(err.ErrParamTooMin):
+            port.CPort(0)
+        with self.assertRaises(err.ErrParamTooMax):
+            port.CPort(65536)
 
-        oPort = ip_port.CPort(1)
-        self.assertEqual(oPort.value, 1)
-        with self.assertRaises(AttributeError):
-            oPort.value = 2
+        v1 = port.CPort(1)
+        v2 = port.CPort('1')
+        v3 = port.CPort(v1)
 
+        self.assertEqual(str(v1), '1')
+        self.assertEqual(v1.value, 1)
+        self.assertEqual(v1, v2)
+        self.assertEqual(v1, v3)
 
 
 if __name__ == '__main__':

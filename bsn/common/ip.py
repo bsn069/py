@@ -39,3 +39,15 @@ class CIP(object):
     @property
     def u32(self):
         return self.__u32
+
+    def __str__(self):
+        return self.__str
+
+    def __getitem__(self, key):
+        try:
+            return self.__field[key]
+        except KeyError:
+            return None
+
+    def __eq__(self, other):
+        return self.u32 == other.u32
