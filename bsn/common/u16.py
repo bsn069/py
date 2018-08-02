@@ -35,7 +35,26 @@ class u16(object):
     def __str__(self):
         return str(self.value)
 
-    def __eq__(self, other):
+
+    def __lt__(self, other):
         if type(other) == u16:
-            return self.value == other.value
-        return False
+            return self.value < other.value
+        return self.value < other
+
+    def __gt__(self, other):
+        if type(other) == u16:
+            return other < self
+        return self.value > other
+
+    def __eq__(self, other):
+        if self < other:
+            return False
+        if self > other:
+            return False
+        return True
+
+    def __le__(self, other):
+        return not (self > other)
+
+    def __ge__(self, other):
+        return not (self < other)

@@ -3,6 +3,7 @@
 
 import unittest
 from bsn.common import u16
+from bsn.common import err
 
 
 class Test(unittest.TestCase):
@@ -14,13 +15,13 @@ class Test(unittest.TestCase):
         pass
 
     def test_2_(self):
-        with self.assertRaises(u16.ErrParamType):
+        with self.assertRaises(err.ErrParamType):
             u16.u16(None)
-        with self.assertRaises(u16.ErrParamType):
+        with self.assertRaises(err.ErrParamType):
             u16.u16('None')
-        with self.assertRaises(u16.ErrParamTooMin):
+        with self.assertRaises(err.ErrParamTooMin):
             u16.u16(-1)
-        with self.assertRaises(u16.ErrParamTooMax):
+        with self.assertRaises(err.ErrParamTooMax):
             u16.u16(1<<16)
 
         v1 = u16.u16(0)
@@ -29,9 +30,16 @@ class Test(unittest.TestCase):
         self.assertEqual(str(v1), '0')
         self.assertEqual(v1, v2)
         self.assertEqual(v3, v1)
+        self.assertEqual(v1.value, 0)
+        self.assertEqual(v1, 0)
 
-
-
+        v4 = u16.u16(1)
+        self.assertLess(v1, v4)
+        self.assertGreater(v4, v1)
+        self.assertLessEqual(v1, 0)
+        self.assertLessEqual(v1, 1)
+        self.assertGreaterEqual(v4, 0)
+        self.assertGreaterEqual(v4, 1)
 
 
 if __name__ == '__main__':
