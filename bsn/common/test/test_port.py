@@ -15,11 +15,11 @@ class Test(unittest.TestCase):
         pass
 
     def test_2_(self):
-        with self.assertRaises(err.ErrParamType):
+        with self.assertRaises(err.ErrPort):
             port.CPort(None)
-        with self.assertRaises(err.ErrParamTooMin):
+        with self.assertRaises(err.ErrPort):
             port.CPort(0)
-        with self.assertRaises(err.ErrParamTooMax):
+        with self.assertRaises(err.ErrPort):
             port.CPort(65536)
 
         v1 = port.CPort(1)
@@ -30,6 +30,7 @@ class Test(unittest.TestCase):
         self.assertEqual(v1.value, 1)
         self.assertEqual(v1, v2)
         self.assertEqual(v1, v3)
+        self.assertEqual(v1, 1)
 
 
 if __name__ == '__main__':

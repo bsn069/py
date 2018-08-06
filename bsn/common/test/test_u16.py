@@ -32,6 +32,7 @@ class Test(unittest.TestCase):
         self.assertEqual(v3, v1)
         self.assertEqual(v1.value, 0)
         self.assertEqual(v1, 0)
+        self.assertEqual(0, v1)
 
         v4 = u16.u16(1)
         self.assertLess(v1, v4)

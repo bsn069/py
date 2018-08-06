@@ -2,14 +2,7 @@
 # -*- coding: UTF-8 -*-
 
 import re
-
-
-def min():
-    return 1
-
-
-def max():
-    return 65535
+from bsn.common import err
 
 
 def valid(strIP):
@@ -18,22 +11,29 @@ def valid(strIP):
     return re.match(r"^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$", strIP)
 
 
-class CIPErr(Exception):
-    pass
-
 
 class CIP(object):
-    def __init__(self, strIP):
+    def __init__(self, ip):
+        strIP = ip
+        if type(ip) == CIP:
+            strIP = str(ip)
+        elif type(ip) == int:
+            strIP = '%d.%d.%d.%d' % ((ip >> 24) & 0xff, (ip >> 16) & 0xff, (ip >> 8) & 0xff,  (ip >> 0) & 0xff)
+        elif type(ip) == str:
+            pass
+        else:
+            return err.ErrIP()
+
         if not valid(strIP):
-            raise CIPErr()
+            raise err.ErrIP()
 
         result = re.findall(r'(\d+).(\d+).(\d+).(\d+)', strIP)
         if not result:
-            raise CIPErr()
+            raise err.ErrIP()
 
         self.__field = (int(result[0][0]), int(
             result[0][1]), int(result[0][2]), int(result[0][3]))
-        self.__str = strIP
+        self.__str = ip
         self.__u32 = (self.__field[0] << 24) + (self.__field[1] << 16) + (self.__field[2] << 8) + self.__field[3]
 
     @property

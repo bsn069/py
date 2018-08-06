@@ -15,17 +15,15 @@ class Test(unittest.TestCase):
         pass
 
     def test_2_(self):
-        with self.assertRaises(ip.CIPErr):
-            ip.CIP(0)
-        with self.assertRaises(ip.CIPErr):
+        with self.assertRaises(err.ErrIP):
             ip.CIP("")
-        with self.assertRaises(ip.CIPErr):
+        with self.assertRaises(err.ErrIP):
             ip.CIP("256.0.0.0")
-        with self.assertRaises(ip.CIPErr):
+        with self.assertRaises(err.ErrIP):
             ip.CIP("-1.0.0.0")
-        with self.assertRaises(ip.CIPErr):
+        with self.assertRaises(err.ErrIP):
             ip.CIP("1.0.0")
-        with self.assertRaises(ip.CIPErr):
+        with self.assertRaises(err.ErrIP):
             ip.CIP("1.0.0.0.9")
 
         oIP = ip.CIP("1.2.3.4")
@@ -42,6 +40,11 @@ class Test(unittest.TestCase):
         self.assertEqual(str(oIP), '0.0.0.1')
         oIP2 = ip.CIP("0.0.0.1")
         self.assertEqual(oIP, oIP2)
+
+        v1 = ip.CIP(oIP2)
+        self.assertEqual(v1, oIP2)
+        v2 = ip.CIP(v1.u32)
+        self.assertEqual(v1, v2)
 
 
 

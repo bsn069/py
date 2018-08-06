@@ -10,12 +10,15 @@ class CPort(object):
     MAX = u16.u16.MAX - 1
 
     def __init__(self, port):
-        u16Value = u16.u16(port)
+        try:
+            u16Value = u16.u16(port)
+        except Exception as e:
+            raise err.ErrPort(e)
             
         if u16Value.value < self.MIN:
-            raise err.ErrParamTooMin()
+            raise err.ErrPort()
         if u16Value.value > self.MAX:
-            raise err.ErrParamTooMax()
+            raise err.ErrPort()
 
         self.__value = u16Value
 
@@ -29,4 +32,4 @@ class CPort(object):
     def __eq__(self, other):
         if type(other) == CPort:
             return self.value == other.value
-        return False
+        return self.__value == other

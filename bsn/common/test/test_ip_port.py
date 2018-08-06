@@ -5,6 +5,7 @@ import unittest
 from bsn.common import ip
 from bsn.common import port
 from bsn.common import ip_port
+from bsn.common import err
 
 
 class Test(unittest.TestCase):
@@ -19,19 +20,22 @@ class Test(unittest.TestCase):
         oIP = ip.CIP("0.0.0.0")
         oPort = port.CPort(2777)
 
-        with self.assertRaises(ip_port.CIPPortErrParamMustIPPort):
-            ip_port.CIPPort("192.0.0.1", 3333)
-        with self.assertRaises(ip_port.CIPPortErrParamNotIP):
+        with self.assertRaises(err.ErrParamNotIP):
             ip_port.CIPPort(None, oPort)
-        with self.assertRaises(ip_port.CIPPortErrParamNotPort):
+        with self.assertRaises(err.ErrParamNotPort):
             ip_port.CIPPort(oIP, None)
 
-        oIPPort = ip_port.CIPPort(oIP, oPort)
+        v1 = ip_port.CIPPort(oIP, oPort)
+        self.assertEqual(str(v1), 'CIPPort("0.0.0.0",2777)')
+        self.assertEqual(v1.string, '0.0.0.0:2777')
+        self.assertEqual(v1.ip, oIP)
+        self.assertEqual(v1.port, oPort)
 
-        self.assertEqual(str(oIPPort), 'CIPPort("0.0.0.0",2777)')
-        self.assertEqual(oIPPort.string, '0.0.0.0:2777')
-        self.assertEqual(oIPPort.ip, oIP)
-        self.assertEqual(oIPPort.port, oPort)
+        v2 = ip_port.CIPPort("0.0.0.0", 2777)
+        self.assertEqual(v1, v2)
+
+        v3 = ip_port.CIPPort("0.0.0.0", "2777")
+        self.assertEqual(v1, v3)
 
 
 if __name__ == '__main__':

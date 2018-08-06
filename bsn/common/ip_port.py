@@ -3,29 +3,22 @@
 
 from bsn.common.ip import CIP
 from bsn.common.port import CPort
-
-class CIPPortErrParamNotIPPort(Exception):
-    pass
-class CIPPortErrParamMustIPPort(Exception):
-    pass
-class CIPPortErrParamNotIP(Exception):
-    pass
-class CIPPortErrParamNotPort(Exception):
-    pass
-
+from bsn.common import err
 
 class CIPPort(object):
-    def __init__(self, oCIP, oCPort):
+    def __init__(self, ip, port):
         '''
-        oCIP must is bsn.common.ip.CIP
-        oCPort must is bsn.common.port.CPort
         '''
-        if type(oCIP) != CIP and type(oCPort) != CPort:
-            raise CIPPortErrParamMustIPPort()
-        if type(oCIP) != CIP:
-            raise CIPPortErrParamNotIP()
-        if type(oCPort) != CPort:
-            raise CIPPortErrParamNotPort()
+
+        try:
+            oCIP = CIP(ip)
+        except Exception:
+            raise err.ErrParamNotIP()
+
+        try:
+            oCPort = CPort(port)
+        except Exception:
+            raise err.ErrParamNotPort()
 
         self.__ip = oCIP
         self.__port = oCPort
