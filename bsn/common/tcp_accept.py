@@ -4,8 +4,9 @@
 import asyncio
 import enum
 import logging
-import bsn.common.ip_port import CPort
-import bsn.common.ip_ip import CIP
+from bsn.common.port import CPort
+from bsn.common.ip import CIP
+from bsn.common import err
 
 class State(enum.Enum):
     Null = 0
@@ -16,14 +17,14 @@ class State(enum.Enum):
     Listening = 5
 
 
-class TCPAcceptCB(object):
+class ITCPAcceptCB(object):
 
     def __init__(self):
         logging.info("{}".format(self))
 
     def on_connect(self, stream_protocal):
         """
-        accept_cb StreamProtocol
+        accept_cb CStreamProtocol
         """
         logging.info("{}".format(self))
 
@@ -34,13 +35,13 @@ class TCPAcceptCB(object):
         logging.info("{}".format(self))
 
 
-class StreamProtocol(asyncio.protocols.Protocol):
+class CStreamProtocol(asyncio.protocols.Protocol):
     """ 
     """
 
     def __init__(self, accept_cb):
         """
-        accept_cb TCPAcceptCB
+        accept_cb ITCPAcceptCB
         """
         logging.info("{}".format(self))
         self._accept_cb = accept_cb
@@ -85,40 +86,46 @@ class CTCPAccept(object):
 
     def __init__(self, accept_cb, loop):
         """
-        accept_cb TCPAcceptCB
+        accept_cb ITCPAcceptCB
         """
         logging.info("{}".format(self))
         self._loop = loop
-        self._host = None
+        self._ip = None
         self._port = None
         self._state = State.Null
         self._server = None
         self._accept_cb = accept_cb
 
-    def listen(self, host, port):
+    def listen(self, ip, port):
+        '''
+        ip CIP
+        port CPort
+        '''
         logging.info("{}".format(self))
+        if type(ip) != CIP:
+            raise err.ErrIP(ip)
+        if type(port) != CPort:
+            raise err.ErrPort(port)
         if self._state is not State.Null:
-            return False
+            raise err.ErrState(self._state)
 
-        self._host = host
+        self._ip = ip
         self._port = port
         self._state = State.WaitListen
         asyncio.ensure_future(self._listen(), loop=self._loop)
-        return True
 
     def close(self):
         logging.info("{}".format(self))
         if self._state is not State.Listened:
-            return False
+            raise err.ErrState(self._state)
 
         self._state = State.WaitClose
         asyncio.ensure_future(self._close(), loop=self._loop)
-        return True
 
     async def _close(self):
         logging.info("{}".format(self))
         if self._state is not State.WaitClose:
-            return False
+            return 
 
         self._state = State.Closeing
         self._server.close()
@@ -126,19 +133,17 @@ class CTCPAccept(object):
         self._server = None
         self._state = State.Null
         self._accept_cb.on_close()
-        return True
 
     async def _listen(self):
         logging.info("{}".format(self))
         if self._state is not State.WaitListen:
-            return False
+            return 
 
         def factory():
-            return StreamProtocol(self._accept_cb)
+            return CStreamProtocol(self._accept_cb)
 
         self._state = State.Listening
         self._server = await self._loop.create_server(
-            factory, self._host, self._port)
+            factory, str(self._ip), self._port.value)
         self._state = State.Listened
         self._accept_cb.on_listen()
-        return True

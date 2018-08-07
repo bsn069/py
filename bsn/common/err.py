@@ -20,3 +20,6 @@ class ErrParamNotIP(ErrParam):
     pass
 class ErrParamNotPort(ErrParam):
     pass
+
+class ErrState(Exception):
+    pass

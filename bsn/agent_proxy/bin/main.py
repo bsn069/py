@@ -13,9 +13,6 @@ async def imp(loop):
     agent_proxy = CAgentProxy()
     await agent_proxy.run()
 
-    await asyncio.sleep(2)
-    loop.stop()
-
 def main():
     loop = asyncio.get_event_loop()
     asyncio.ensure_future(imp(loop))

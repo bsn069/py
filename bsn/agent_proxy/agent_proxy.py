@@ -1,23 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: UTF-8 -*-
 import asyncio
-from bsn.common import ip_port
-from bsn.common.ip_ip import CIP
-from bsn.common.ip_port import CPort
+from bsn.common.ip_port import CIPPort
+from bsn.common.ip import CIP
+from bsn.common.ip import CPort
 from bsn.common import tcp_accept
 
-class CAgentProxyErr(Exception):
-    pass
-class CAgentProxyErrNoListenAddr(CAgentProxyErr):
-    pass
-class CAgentProxyErrNoListenPort(CAgentProxyErrNoListenAddr):
-    pass
-class CAgentProxyErrNoListenIP(CAgentProxyErrNoListenAddr):
-    pass
-class CAgentProxyErrIP(CAgentProxyErr):
-    pass
-class CAgentProxyErrPort(CAgentProxyErr):
-    pass
 
 class CAgentProxy(object):
 
