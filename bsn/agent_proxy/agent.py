@@ -3,11 +3,14 @@
 
 from bsn.app_ipc.app_id import CAppId
 from bsn.common import u8
+from bsn.agent_proxy import stream_protocol
 
 class CAgent(object):
+    '''
+    '''
 
-    def __init__(self):
-        self.__app_id = CAppId()
+    def __init__(self, oCStreamProtocol):
+        self._oCStreamProtocal = oCStreamProtocol
 
     def init(self):
         return True

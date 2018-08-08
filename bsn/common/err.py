@@ -23,3 +23,7 @@ class ErrParamNotPort(ErrParam):
 
 class ErrState(Exception):
     pass
+class ErrHadRun(Exception):
+    pass
+class ErrArg(Exception):
+    pass

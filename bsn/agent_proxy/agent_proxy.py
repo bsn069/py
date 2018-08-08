@@ -3,53 +3,38 @@
 import asyncio
 from bsn.common.ip_port import CIPPort
 from bsn.common.ip import CIP
-from bsn.common.ip import CPort
+from bsn.common.port import CPort
 from bsn.common import tcp_accept
+from bsn.common import err
+from bsn.common import tcp_server
+import logging
+from bsn.agent_proxy import accept_cb
+import enum
 
+class CAgentProxy(tcp_server.CTCPServer):
 
-class CAgentProxy(object):
+    def __init__(self, loop):
+        logging.info("{}".format(self))
 
-    def __init__(self):
-        self.__ip = None
-        self.__port = None
-        self.__run = False
+        oCTCPAcceptCB = accept_cb.CTCPAcceptCB(self)
+        super().__init__(loop, oCTCPAcceptCB)
 
-    async def run(self, loop):
-        if self.ip is None and self.port is None:
-            raise CAgentProxyErrNoListenAddr('not set ip port')
-        if self.ip is None:
-            raise CAgentProxyErrNoListenIP('not set ip')
-        if self.port is None:
-            raise CAgentProxyErrNoListenPort('not set port')
-        if self.__run is True:
-            return 
-        self.__run = True
-        self.__tcp_accept = tcp_accept.CTCPAccept(self, loop)
-        self.__tcp_accept.listen(self.ip., self._port)
+    def _parse_arg(self):
+        logging.info("{}".format(self))
 
-    @property
-    def ip(self):
-        return self.__ip
+        self._CIP = CIP('0.0.0.0')
+        self._CPort = CPort(10001)
 
-    @property
-    def port(self):
-        return self.__port
+    def on_connect(self, oCStreamProtocol):
+        """
+        """
+        logging.info("{}".format(self))
 
-    @ip.setter
-    def ip(self, oIP):
-        if type(oIP) != CIP:
-            raise CAgentProxyErrIP("must CIP")
-        if self.ip is not None:
-            raise CAgentProxyErrIP("had set ip")
-        self.__ip = oIP
+    def on_listen(self):
+        logging.info("{}".format(self))
+        super().on_listen()
 
-    @port.setter
-    def port(self, oPort):
-        if type(oPort) != CPort:
-            raise CAgentProxyErrPort("must CPort")
-        if self.port is not None:
-            raise CAgentProxyErrPort("had set port")
-        self.__port = oPort
-
-
+    def on_close(self):
+        logging.info("{}".format(self))
+        super().on_close()
 

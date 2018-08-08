@@ -8,7 +8,7 @@ from bsn.common.port import CPort
 from bsn.common.ip import CIP
 from bsn.common import err
 
-class State(enum.Enum):
+class EState(enum.Enum):
     Null = 0
     WaitListen = 1
     Listened = 2
@@ -17,14 +17,22 @@ class State(enum.Enum):
     Listening = 5
 
 
-class ITCPAcceptCB(object):
-
+class CTCPAcceptCB(object):
+    '''
+    '''
     def __init__(self):
         logging.info("{}".format(self))
 
+    def create_stream_protocal(self):
+        '''
+        return CStreamProtocol
+        '''
+        logging.info("{}".format(self))
+        return CStreamProtocol(self)
+
     def on_connect(self, stream_protocal):
         """
-        accept_cb CStreamProtocol
+        stream_protocal CStreamProtocol
         """
         logging.info("{}".format(self))
 
@@ -92,7 +100,7 @@ class CTCPAccept(object):
         self._loop = loop
         self._ip = None
         self._port = None
-        self._state = State.Null
+        self._state = EState.Null
         self._server = None
         self._accept_cb = accept_cb
 
@@ -106,44 +114,44 @@ class CTCPAccept(object):
             raise err.ErrIP(ip)
         if type(port) != CPort:
             raise err.ErrPort(port)
-        if self._state is not State.Null:
+        if self._state is not EState.Null:
             raise err.ErrState(self._state)
 
         self._ip = ip
         self._port = port
-        self._state = State.WaitListen
+        self._state = EState.WaitListen
         asyncio.ensure_future(self._listen(), loop=self._loop)
 
     def close(self):
         logging.info("{}".format(self))
-        if self._state is not State.Listened:
+        if self._state is not EState.Listened:
             raise err.ErrState(self._state)
 
-        self._state = State.WaitClose
+        self._state = EState.WaitClose
         asyncio.ensure_future(self._close(), loop=self._loop)
 
     async def _close(self):
         logging.info("{}".format(self))
-        if self._state is not State.WaitClose:
+        if self._state is not EState.WaitClose:
             return 
 
-        self._state = State.Closeing
+        self._state = EState.Closeing
         self._server.close()
         await self._server.wait_closed()
         self._server = None
-        self._state = State.Null
+        self._state = EState.Null
         self._accept_cb.on_close()
 
     async def _listen(self):
         logging.info("{}".format(self))
-        if self._state is not State.WaitListen:
+        if self._state is not EState.WaitListen:
             return 
 
         def factory():
-            return CStreamProtocol(self._accept_cb)
+            return self._accept_cb.create_stream_protocal()
 
-        self._state = State.Listening
+        self._state = EState.Listening
         self._server = await self._loop.create_server(
             factory, str(self._ip), self._port.value)
-        self._state = State.Listened
+        self._state = EState.Listened
         self._accept_cb.on_listen()
