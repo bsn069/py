@@ -1,19 +1,31 @@
 #!/usr/bin/env python3
 # -*- coding: UTF-8 -*-
 
-from bsn.app_ipc.app_id import CAppId
-from bsn.common import u8
-from bsn.agent_proxy import stream_protocol
+import asyncio
+import enum
+import logging
+from bsn.common import tcp_session
+from bsn.common import err
 
-class CAgent(object):
-    '''
-    '''
+class CAgent(tcp_session.CTCPSession):
+    """ 
+    """
 
-    def __init__(self, oCStreamProtocol):
-        self._oCStreamProtocal = oCStreamProtocol
+    def __init__(self, oCAgentProxy, uCreateIndex):
+        """
+        """
+        logging.info("{}".format(self))
+        super().__init__()
 
-    def init(self):
-        return True
+        self._CAgentProxy = oCAgentProxy
+        self._uCreateIndex = uCreateIndex
 
+    def connection_made(self, transport):
+        logging.info("{} {}".format(self, transport))
+        super().connection_made(transport)
 
+    def connection_lost(self, exc):
+        logging.info("{} {}".format(self, exc))
 
+        super().connection_lost(exc)
+        self._CAgentProxy = None

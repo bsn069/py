@@ -9,6 +9,7 @@ from bsn.common import err
 from bsn.common import tcp_server
 import logging
 from bsn.agent_proxy import accept_cb
+from bsn.agent_proxy import agent
 import enum
 
 class CAgentProxy(tcp_server.CTCPServer):
@@ -16,8 +17,13 @@ class CAgentProxy(tcp_server.CTCPServer):
     def __init__(self, loop):
         logging.info("{}".format(self))
 
-        oCTCPAcceptCB = accept_cb.CTCPAcceptCB(self)
-        super().__init__(loop, oCTCPAcceptCB)
+        super().__init__(loop)
+
+        self._Index2CAgent = {}
+        self._uCreateIndex = 0
+
+    def getAgentByCreateIndex(self, uCreateIndex):
+        return self._Index2CAgent[uCreateIndex]
 
     def _parse_arg(self):
         logging.info("{}".format(self))
@@ -25,16 +31,24 @@ class CAgentProxy(tcp_server.CTCPServer):
         self._CIP = CIP('0.0.0.0')
         self._CPort = CPort(10001)
 
-    def on_connect(self, oCStreamProtocol):
-        """
-        """
+    def _create_session(self):
+        '''
+        tcp_session.CTCPSession()
+        '''
+        logging.info("{}".format(self))
+        self._uCreateIndex = self._uCreateIndex + 1
+        oCAgent = agent.CAgent(self, self._uCreateIndex)
+        self._Index2CAgent[self._uCreateIndex] = oCAgent
+        return oCAgent
+
+    def _on_tcp_start_listen(self):
+        logging.info("{}".format(self))
+        super()._on_tcp_start_listen()
+
+    def _on_tcp_stop_listen(self):
         logging.info("{}".format(self))
 
-    def on_listen(self):
-        logging.info("{}".format(self))
-        super().on_listen()
+        super()._on_tcp_stop_listen()
 
-    def on_close(self):
-        logging.info("{}".format(self))
-        super().on_close()
+
 

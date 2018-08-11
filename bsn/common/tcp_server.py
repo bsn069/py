@@ -15,13 +15,12 @@ class EState(enum.Enum):
     Runing = 2
     WaitClose = 3
 
-class CTCPServer(object):
+class CTCPServer(tcp_accept.CTCPAcceptCB):
 
-    def __init__(self, loop, oCTCPAcceptCB):
+    def __init__(self, loop):
         logging.info("{}".format(self))
 
         self._EState = EState.Null
-        self._CTCPAcceptCB = oCTCPAcceptCB
         self._CTCPAccept = None
 
         self._CIP = None
@@ -32,8 +31,8 @@ class CTCPServer(object):
     def _parse_arg(self):
         logging.info("{}".format(self))
 
-        self._CIP = CIP('0.0.0.0')
-        self._CPort = CPort(10001)
+        # self._CIP = CIP('0.0.0.0')
+        # self._CPort = CPort(10001)
 
     def run(self):
         logging.info("{}".format(self))
@@ -58,11 +57,11 @@ class CTCPServer(object):
 
     async def _run(self):
         logging.info("{}".format(self))
-        self._CTCPAccept = tcp_accept.CTCPAccept(self._CTCPAcceptCB, self._loop)
-        self._CTCPAccept.listen(self._CIP, self._CPort)
+        self._CTCPAccept = tcp_accept.CTCPAccept(self._loop, self)
+        self._CTCPAccept.start_listen(self._CIP, self._CPort)
 
     async def _stop(self):
-        self._CTCPAccept.close()
+        self._CTCPAccept.stop_listen()
         self._CTCPAccept = None
 
     @property
@@ -73,24 +72,18 @@ class CTCPServer(object):
     def port(self):
         return self._CPort
 
-    def on_connect(self, oCStreamProtocol):
-        """
-        """
-        logging.info("{}".format(self))
-
-    def on_listen(self):
+    def _on_tcp_start_listen(self):
         logging.info("{}".format(self))
         if self._EState != EState.WaitRun:
             raise err.ErrState(self._EState)
         self._EState = EState.Runing
 
-    def on_close(self):
+    def _on_tcp_stop_listen(self):
         logging.info("{}".format(self))
         if self._EState != EState.WaitClose:
             raise err.ErrState(self._EState)
 
         self._CTCPAccept = None
-        self._CTCPAcceptCB = None
         self._EState = EState.Null
         self._loop.stop()
 
