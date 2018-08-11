@@ -8,6 +8,8 @@ class ErrParamType(ErrParam):
 
 class ErrIP(ErrParam):
     pass
+class ErrHost(ErrParam):
+    pass
 class ErrPort(ErrParam):
     pass
 

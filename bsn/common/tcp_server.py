@@ -56,7 +56,7 @@ class CTCPServer(tcp_accept.CTCPAcceptCB):
         asyncio.ensure_future(self._stop(), loop=self._loop)
 
     async def _run(self):
-        logging.info("{}".format(self))
+        logging.info("{} {} {}".format(self, self._CIP, self._CPort))
         self._CTCPAccept = tcp_accept.CTCPAccept(self._loop, self)
         self._CTCPAccept.start_listen(self._CIP, self._CPort)
 

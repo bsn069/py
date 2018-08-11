@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: UTF-8 -*-
 
-from bsn.agent_proxy.agent_proxy import CAgentProxy
+from bsn.agent.agent import CAgent
 from bsn.common import asyncio_app
 
 def create_app(loop):
-    return CAgentProxy(loop)
+    return CAgent(loop)
 
 if __name__ == '__main__':
-    asyncio_app.main(create_app, 5)
+    asyncio_app.main(create_app, 60)

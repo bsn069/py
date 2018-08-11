@@ -4,7 +4,7 @@ import logging
 
 class CApp(object):
 
-    def __init__(self, loop):
+    def __init__(self):
         logging.info("{}".format(self))
 
     def run(self):

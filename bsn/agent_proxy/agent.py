@@ -37,4 +37,6 @@ class CAgent(tcp_session.CTCPSession):
 
     def data_received(self, data):
         logging.info("{} {}".format(self, data))
-        self._read_buff.append(data)
+        super().data_received(data)
+        # int.from_bytes(data, "little", False)
+ 

@@ -7,14 +7,9 @@ import logging
 from bsn.common.port import CPort
 from bsn.common.ip import CIP
 from bsn.common import err
+ 
 
-class EState(enum.Enum):
-    Null = 0
-    Connected = 1
-    DisConnected = 2
-
-
-class CTCPSession(asyncio.protocols.Protocol):
+class CMsgHead(object):
     """ 
     """
 
@@ -22,14 +17,16 @@ class CTCPSession(asyncio.protocols.Protocol):
         """
         """
         logging.info("{}".format(self))
-        self._transport = None
-        self._read_buff = bytearray()
-        self._write_buff = bytearray()
-        self._EStateCTCPSession = EState.Null
+        self._length = 0
+        self._id = 0
 
     @property
-    def estate_tcp_session(self):
-        return self._EStateCTCPSession
+    def id(self):
+        return self._id
+        
+    @property
+    def id(self):
+        return self._id
 
     def connection_made(self, transport):
         logging.info("{}".format(self))
@@ -41,7 +38,7 @@ class CTCPSession(asyncio.protocols.Protocol):
         self._EStateCTCPSession = EState.DisConnected
 
     def data_received(self, data):
-        logging.info("{} type(data):{} {} len(data):{}".format(self, type(data), data, len(data)))
+        logging.info("{} {}".format(self, data))
         self._read_buff.append(data)
 
     def eof_received(self):
@@ -60,8 +57,3 @@ class CTCPSession(asyncio.protocols.Protocol):
     def close(self):
         return self._transport.close()
         
-    def send_pkg(self, data):
-        length = len(data)
-        byLength = length.to_bytes(2, byteorder='little')
-        self.write(byLength)
-        self.write(data)
