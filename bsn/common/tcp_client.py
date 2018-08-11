@@ -33,6 +33,10 @@ class CTCPClient(object):
         self._uRetryDelaySec = 1
         self._uPkgLengthBit = 2 # pkg length value use bit
         self._uPkgLengthMax = 10 # pkg length value max
+        self._uRecvByte = 0
+        self._uSendByte = 0
+        self._uRecvPkg = 0
+        self._uSendPkg = 0
 
     def start_connect(self, host, port):
         '''
@@ -91,12 +95,14 @@ class CTCPClient(object):
         asyncio.ensure_future(self._recv_loop(), loop=self._loop)
                 
     def send_pkg(self, data):
+        self._uSendPkg = self._uSendPkg + 1
         length = len(data)
         byLength = length.to_bytes(2, byteorder='little')
-        self.write_bytes(byLength)
-        self.write_bytes(data)
+        self.send(byLength)
+        self.send(data)
 
-    def write_bytes(self, data):
+    def send(self, data):
+        self._uSendByte = self._uSendByte + 1
         return self._writer.write(data)
 
     async def wait_all_send(self):
@@ -104,21 +110,30 @@ class CTCPClient(object):
 
     async def read_bytes(self, num_bytes):
         data = await self._reader.readexactly(num_bytes)
+        self._uRecvByte = self._uRecvByte + len(data)
         return data
 
     async def _recv_loop(self):
-        while self._EStateCTCPClient == EState.Connected:
-            head = await self.read_bytes(self._uPkgLengthBit)
-            pkgLength = int.from_bytes(head, 'little', False)
-            logging.info("{} head:{} pkgLength:{}".format(self, head, pkgLength))
-            if pkgLength > self._uPkgLengthMax:
-                logging.info("{} head:{} pkgLength:{} self._uPkgLengthMax:{}".format(self, head, pkgLength, self._uPkgLengthMax))
-                self.stop_connect()
-                return
-            pkgData = await self.read_bytes(pkgLength)
-            logging.info("{} pkgData:{}".format(self, pkgData))
+        try:
+            while self._EStateCTCPClient == EState.Connected:
+                head = await self.read_bytes(self._uPkgLengthBit)
+                pkgLength = int.from_bytes(head, 'little')
+                logging.info("{} head:{} pkgLength:{}".format(self, head, pkgLength))
+                if pkgLength > self._uPkgLengthMax:
+                    logging.info("{} head:{} pkgLength:{} self._uPkgLengthMax:{}".format(self, head, pkgLength, self._uPkgLengthMax))
+                    self.stop_connect()
+                    return
+                pkgData = await self.read_bytes(pkgLength)
+                self._on_recv_pkg(pkgData)
+        except asyncio.streams.IncompleteReadError as e:
+            logging.error(e)
+            
         self._on_dis_connect()
     
+    def _on_recv_pkg(self, byData):
+        logging.info("{} byData:{}".format(self, byData))
+        self._uRecvPkg = self._uRecvPkg + 1
+
     @property
     def host(self):
         return self._CHost

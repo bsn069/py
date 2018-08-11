@@ -27,7 +27,16 @@ class CAgentProxy(tcp_client.CTCPClient):
 
     def _on_connect(self):
         logging.info("{}".format(self))
-        self.send_pkg(b"hello")
+        asyncio.ensure_future(self._run(), loop=self._loop)
 
     def _on_dis_connect(self):
         logging.info("{}".format(self))
+        super()._on_connect_fail()
+
+    async def _run(self):
+        logging.info("{}".format(self))
+        while self._EStateCTCPClient == tcp_client.EState.Connected:
+            self.send_pkg(b"hello")
+            await asyncio.sleep(3)
+            self.send_pkg(b"world!")
+            await asyncio.sleep(3)

@@ -29,3 +29,6 @@ class ErrHadRun(Exception):
     pass
 class ErrArg(Exception):
     pass
+
+class ErrPkgLength(Exception):
+    pass
