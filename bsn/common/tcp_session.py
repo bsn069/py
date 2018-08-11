@@ -8,6 +8,12 @@ from bsn.common.port import CPort
 from bsn.common.ip import CIP
 from bsn.common import err
 
+class EState(enum.Enum):
+    Null = 0
+    Connected = 1
+    DisConnected = 2
+
+
 class CTCPSession(asyncio.protocols.Protocol):
     """ 
     """
@@ -19,13 +25,20 @@ class CTCPSession(asyncio.protocols.Protocol):
         self._transport = None
         self._read_buff = bytearray()
         self._write_buff = bytearray()
+        self._EStateCTCPSession = EState.Null
+
+    @property
+    def estate_tcp_session(self):
+        return self._EStateCTCPSession
 
     def connection_made(self, transport):
         logging.info("{}".format(self))
         self._transport = transport
+        self._EStateCTCPSession = EState.Connected
 
     def connection_lost(self, exc):
         logging.info("{}".format(self))
+        self._EStateCTCPSession = EState.DisConnected
 
     def data_received(self, data):
         logging.info("{} {}".format(self, data))

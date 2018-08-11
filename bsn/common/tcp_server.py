@@ -20,7 +20,7 @@ class CTCPServer(tcp_accept.CTCPAcceptCB):
     def __init__(self, loop):
         logging.info("{}".format(self))
 
-        self._EState = EState.Null
+        self._EStateCTCPServer = EState.Null
         self._CTCPAccept = None
 
         self._CIP = None
@@ -36,23 +36,23 @@ class CTCPServer(tcp_accept.CTCPAcceptCB):
 
     def run(self):
         logging.info("{}".format(self))
-        if self._EState != EState.Null:
-            raise err.ErrState(self._EState)
+        if self._EStateCTCPServer != EState.Null:
+            raise err.ErrState(self._EStateCTCPServer)
             
         try:
             self._parse_arg()
         except Exception as e:
             raise err.ErrArg(e)
 
-        self._EState = EState.WaitRun
+        self._EStateCTCPServer = EState.WaitRun
         asyncio.ensure_future(self._run(), loop=self._loop)
 
     def stop(self):
         logging.info("{}".format(self))
-        if self._EState != EState.Runing:
-            raise err.ErrState(self._EState)
+        if self._EStateCTCPServer != EState.Runing:
+            raise err.ErrState(self._EStateCTCPServer)
             
-        self._EState = EState.WaitClose
+        self._EStateCTCPServer = EState.WaitClose
         asyncio.ensure_future(self._stop(), loop=self._loop)
 
     async def _run(self):
@@ -72,18 +72,22 @@ class CTCPServer(tcp_accept.CTCPAcceptCB):
     def port(self):
         return self._CPort
 
+    @property
+    def estate_tcp_server(self):
+        return self._EStateCTCPServer
+
     def _on_tcp_start_listen(self):
         logging.info("{}".format(self))
-        if self._EState != EState.WaitRun:
-            raise err.ErrState(self._EState)
-        self._EState = EState.Runing
+        if self._EStateCTCPServer != EState.WaitRun:
+            raise err.ErrState(self._EStateCTCPServer)
+        self._EStateCTCPServer = EState.Runing
 
     def _on_tcp_stop_listen(self):
         logging.info("{}".format(self))
-        if self._EState != EState.WaitClose:
-            raise err.ErrState(self._EState)
+        if self._EStateCTCPServer != EState.WaitClose:
+            raise err.ErrState(self._EStateCTCPServer)
 
         self._CTCPAccept = None
-        self._EState = EState.Null
+        self._EStateCTCPServer = EState.Null
         self._loop.stop()
 
