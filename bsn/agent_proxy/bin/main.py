@@ -8,4 +8,4 @@ def create_app(loop):
     return CAgentProxy(loop)
 
 if __name__ == '__main__':
-    asyncio_app.main(create_app, 600)
+    asyncio_app.main(create_app, 6000)

@@ -11,83 +11,55 @@ from bsn.common import tcp_accept
 
 class EState(enum.Enum):
     Null = 0
-    WaitRun = 1
-    Runing = 2
-    WaitClose = 3
+    ParseIPPort = 1
+    Listened = 2
 
-class CTCPServer(tcp_accept.CTCPAcceptCB):
+class CTCPServer(tcp_accept.CTCPAccept):
 
     def __init__(self, loop):
         logging.info("{}".format(self))
+        super().__init__(loop)
 
         self._EStateCTCPServer = EState.Null
-        self._CTCPAccept = None
 
-        self._CIP = None
-        self._CPort = None
-
-        self._loop = loop
-
-    def _parse_arg(self):
+    async def _parse_ip_port(self):
         logging.info("{}".format(self))
+        self._CIP = CIP('0.0.0.0')
+        self._CPort = CPort(10001)
+        await asyncio.sleep(1)
 
-        # self._CIP = CIP('0.0.0.0')
-        # self._CPort = CPort(10001)
+    async def _run(self):
+        logging.info("{}".format(self))
+        await asyncio.sleep(10)
 
-    def run(self):
+    async def run(self):
         logging.info("{}".format(self))
         if self._EStateCTCPServer != EState.Null:
             raise err.ErrState(self._EStateCTCPServer)
-            
+
         try:
-            self._parse_arg()
+            await self._parse_ip_port()
+            self._EStateCTCPServer = EState.ParseIPPort
+
+            await self.start_listen()
+            self._EStateCTCPServer = EState.Listened
+
+            await self._run()
+            logging.info("{} run end".format(self))
+
         except Exception as e:
-            raise err.ErrArg(e)
+            logging.error(e)
 
-        self._EStateCTCPServer = EState.WaitRun
-        asyncio.ensure_future(self._run(), loop=self._loop)
+        if self._EStateCTCPServer.value > EState.Listened.value:
+            await self.stop_listen()
+        if self._EStateCTCPServer.value > EState.ParseIPPort.value:
+            self._CIP = None
+            self._CPort = None
 
-    def stop(self):
-        logging.info("{}".format(self))
-        if self._EStateCTCPServer != EState.Runing:
-            raise err.ErrState(self._EStateCTCPServer)
-            
-        self._EStateCTCPServer = EState.WaitClose
-        asyncio.ensure_future(self._stop(), loop=self._loop)
-
-    async def _run(self):
-        logging.info("{} {} {}".format(self, self._CIP, self._CPort))
-        self._CTCPAccept = tcp_accept.CTCPAccept(self._loop, self)
-        self._CTCPAccept.start_listen(self._CIP, self._CPort)
-
-    async def _stop(self):
-        self._CTCPAccept.stop_listen()
-        self._CTCPAccept = None
-
-    @property
-    def ip(self):
-        return self._CIP
-
-    @property
-    def port(self):
-        return self._CPort
+        self._EStateCTCPServer = EState.Null
 
     @property
     def estate_tcp_server(self):
         return self._EStateCTCPServer
 
-    def _on_tcp_start_listen(self):
-        logging.info("{}".format(self))
-        if self._EStateCTCPServer != EState.WaitRun:
-            raise err.ErrState(self._EStateCTCPServer)
-        self._EStateCTCPServer = EState.Runing
-
-    def _on_tcp_stop_listen(self):
-        logging.info("{}".format(self))
-        if self._EStateCTCPServer != EState.WaitClose:
-            raise err.ErrState(self._EStateCTCPServer)
-
-        self._CTCPAccept = None
-        self._EStateCTCPServer = EState.Null
-        self._loop.stop()
 

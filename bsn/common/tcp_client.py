@@ -12,8 +12,7 @@ from bsn.common import err
 
 class EState(enum.Enum):
     Null = 0
-    WaitConnect = 1
-    Connected = 2
+    Connected = 1
 
 
 
@@ -25,12 +24,17 @@ class CTCPClient(object):
         logging.info("{}".format(self))
         self._reader = None
         self._writer = None
+
         self._EStateCTCPClient = EState.Null
+
         self._CHost = None
         self._CPort = None
+
         self._loop = loop
+
         self._uRetryCountMax = 30
         self._uRetryDelaySec = 1
+        
         self._uPkgLengthBit = 2 # pkg length value use bit
         self._uPkgLengthMax = 10 # pkg length value max
         self._uRecvByte = 0
@@ -38,43 +42,20 @@ class CTCPClient(object):
         self._uRecvPkg = 0
         self._uSendPkg = 0
 
-    def start_connect(self, host, port):
+    def estate_tcp_client(self):
+        return self._EStateCTCPClient
+
+    async def connect(self):
         '''
         '''
-        logging.info("{} {} {}".format(self, host, port))
-        if type(host) != CHost:
-            raise err.ErrHost(host)
-        if type(port) != CPort:
-            raise err.ErrPort(port)
-        if self._EStateCTCPClient is not EState.Null:
+        logging.info("{} {} {}".format(self, self._CHost, self._CPort))
+        if type(self._CHost) != CHost:
+            raise err.ErrHost(self._CHost)
+        if type(self._CPort) != CPort:
+            raise err.ErrPort(self._CPort)
+        if self._EStateCTCPClient != EState.Null:
             raise err.ErrState(self._EStateCTCPClient)
 
-        self._CHost = host
-        self._CPort = port
-        self._EStateCTCPClient = EState.WaitConnect
-        asyncio.ensure_future(self._connect(), loop=self._loop)
-
-    def _on_connect(self):
-        logging.info("{}".format(self))
-
-    def _on_connect_fail(self):
-        logging.info("{}".format(self))
-
-    def stop_connect(self):
-        logging.info("{}".format(self))
-        if self._writer:
-            self._writer.transport.close()
-        self._writer = None
-        self._reader = None
-
-    def _on_dis_connect(self):
-        logging.info("{}".format(self))
-
-    async def _connect(self):
-        """
-        """
-        logging.info("{} {} {}".format(self, self._CHost, self._CPort))
-        
         uRetryCount = 0
         while True:
             try:
@@ -83,16 +64,49 @@ class CTCPClient(object):
             except ConnectionRefusedError as e:
                 logging.error(e)
                 if uRetryCount >= self._uRetryCountMax:
-                    self._EStateCTCPClient = EState.Null
-                    self._on_connect_fail()
-                    return
+                    return err.ErrConnectFail(e)
                 uRetryCount = uRetryCount + 1
                 await asyncio.sleep(self._uRetryDelaySec)
+
         self._set_keep_alive()
         self._set_nodelay(True)
         self._EStateCTCPClient = EState.Connected
-        self._on_connect()
-        asyncio.ensure_future(self._recv_loop(), loop=self._loop)
+        asyncio.ensure_future(self._recv_loop(), loop = self._loop)
+
+    async def _recv_loop(self):
+        logging.info("{}".format(self))
+        try:
+            while self._EStateCTCPClient == EState.Connected:
+                head = await self.read_bytes(self._uPkgLengthBit)
+                pkgLength = int.from_bytes(head, 'little')
+                logging.info("{} head:{} pkgLength:{}".format(self, head, pkgLength))
+                if pkgLength > self._uPkgLengthMax:
+                    logging.info("{} head:{} pkgLength:{} self._uPkgLengthMax:{}".format(self, head, pkgLength, self._uPkgLengthMax))
+                    asyncio.ensure_future(self.disconnect("pkg too big"), loop = self._loop)
+                    return
+                pkgData = await self.read_bytes(pkgLength)
+                await self._on_recv_pkg(pkgData)
+        except asyncio.streams.IncompleteReadError as e:
+            logging.error(e)
+
+    async def _on_recv_pkg(self, byData):
+        logging.info("{} byData:{}".format(self, byData))
+        self._uRecvPkg = self._uRecvPkg + 1
+        yield
+
+    async def disconnect(self, strWhy):
+        logging.info("{} {}".format(self, strWhy))
+        if self._EStateCTCPClient != EState.Connected:
+            raise err.ErrState(self._EStateCTCPClient)
+
+        await self.wait_all_send()
+  
+        if self._writer:
+            self._writer.transport.close()
+        self._writer = None
+        self._reader = None
+
+        logging.info('leave {}'.format(self))
                 
     def send_pkg(self, data):
         self._uSendPkg = self._uSendPkg + 1
@@ -112,27 +126,6 @@ class CTCPClient(object):
         data = await self._reader.readexactly(num_bytes)
         self._uRecvByte = self._uRecvByte + len(data)
         return data
-
-    async def _recv_loop(self):
-        try:
-            while self._EStateCTCPClient == EState.Connected:
-                head = await self.read_bytes(self._uPkgLengthBit)
-                pkgLength = int.from_bytes(head, 'little')
-                logging.info("{} head:{} pkgLength:{}".format(self, head, pkgLength))
-                if pkgLength > self._uPkgLengthMax:
-                    logging.info("{} head:{} pkgLength:{} self._uPkgLengthMax:{}".format(self, head, pkgLength, self._uPkgLengthMax))
-                    self.stop_connect()
-                    return
-                pkgData = await self.read_bytes(pkgLength)
-                self._on_recv_pkg(pkgData)
-        except asyncio.streams.IncompleteReadError as e:
-            logging.error(e)
-            
-        self._on_dis_connect()
-    
-    def _on_recv_pkg(self, byData):
-        logging.info("{} byData:{}".format(self, byData))
-        self._uRecvPkg = self._uRecvPkg + 1
 
     @property
     def host(self):

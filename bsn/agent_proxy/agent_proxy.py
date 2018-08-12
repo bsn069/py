@@ -24,12 +24,6 @@ class CAgentProxy(tcp_server.CTCPServer):
     def getAgentByCreateIndex(self, uCreateIndex):
         return self._Index2CAgent[uCreateIndex]
 
-    def _parse_arg(self):
-        logging.info("{}".format(self))
-
-        self._CIP = CIP('0.0.0.0')
-        self._CPort = CPort(10001)
-
     def _create_session(self):
         '''
         tcp_session.CTCPSession()
@@ -39,15 +33,10 @@ class CAgentProxy(tcp_server.CTCPServer):
         oCAgent = agent.CAgent(self, self._uCreateIndex)
         self._Index2CAgent[self._uCreateIndex] = oCAgent
         return oCAgent
-
-    def _on_tcp_start_listen(self):
+ 
+    async def _run(self):
         logging.info("{}".format(self))
-        super()._on_tcp_start_listen()
-
-    def _on_tcp_stop_listen(self):
-        logging.info("{}".format(self))
-
-        super()._on_tcp_stop_listen()
-
-
-
+        while True:
+            await asyncio.sleep(1)
+            for oAgent in self._Index2CAgent:
+                oAgent[1]._update()

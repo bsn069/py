@@ -29,25 +29,25 @@ class CAgent(app.CApp):
         super().__init__()
 
         self._loop = loop
-        self._CAgentProxy = []
+        self._uAgentProxyIndex = 0
 
-    def run(self):
+    async def run(self):
         logging.info("{}".format(self))
-        asyncio.ensure_future(self._run(), loop=self._loop)
 
-    def stop(self):
-        logging.info("{}".format(self))
-        self._loop.stop()
-
-    async def _run(self):
-        logging.info("{}".format(self))
-        self._connect_agent_proxy()
-
-    def _connect_agent_proxy(self):
-        logging.info("{}".format(self))
         oCAgentProxy = CAgentProxy(self, self._loop)
-        self._CAgentProxy.append(oCAgentProxy)
-        host = CHost("127.0.0.1")
-        port = CPort(10001)
-        oCAgentProxy.start_connect(host, port)
+        asyncio.ensure_future(oCAgentProxy.run(), loop = self._loop)
 
+        oCAgentProxy = CAgentProxy(self, self._loop)
+        asyncio.ensure_future(oCAgentProxy.run(), loop = self._loop)
+
+        oCAgentProxy = CAgentProxy(self, self._loop)
+        asyncio.ensure_future(oCAgentProxy.run(), loop = self._loop)
+
+        oCAgentProxy = CAgentProxy(self, self._loop)
+        await oCAgentProxy.run()
+
+        logging.info("leave {}".format(self))
+
+    def gen_agent_proxy_index(self):
+        self._uAgentProxyIndex = self._uAgentProxyIndex + 1
+        return self._uAgentProxyIndex

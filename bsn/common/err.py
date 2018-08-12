@@ -32,3 +32,8 @@ class ErrArg(Exception):
 
 class ErrPkgLength(Exception):
     pass
+
+class ErrListenFail(Exception):
+    pass
+class ErrConnectFail(Exception):
+    pass

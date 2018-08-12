@@ -29,7 +29,7 @@ class CAgent(tcp_session.CTCPSession):
     def connection_made(self, transport):
         logging.info("{} {}".format(self, transport))
         super().connection_made(transport)
-
+       
     def connection_lost(self, exc):
         logging.info("{} {}".format(self, exc))
         super().connection_lost(exc)
@@ -39,5 +39,14 @@ class CAgent(tcp_session.CTCPSession):
         logging.info("{} {}".format(self, data))
         super().data_received(data)
         # int.from_bytes(data, "little", False)
-        
+
+    def _on_recv_pkg(self, byData):
+        logging.info("{} byData:{}".format(self, byData))
+        super()._on_recv_pkg(byData)
+        self.send(byData)
+
+    def _update(self):
+        logging.info("{}".format(self))
+
+    
  

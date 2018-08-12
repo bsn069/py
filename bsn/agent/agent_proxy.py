@@ -6,6 +6,8 @@ import enum
 import logging
 from bsn.common import tcp_client
 from bsn.common import err
+from bsn.common.port import CPort
+from bsn.common.host import CHost
 
 class EState(enum.Enum):
     Null = 0
@@ -24,19 +26,30 @@ class CAgentProxy(tcp_client.CTCPClient):
         super().__init__(loop)
 
         self._CAgent = oCAgent
+        self._uIndex = oCAgent.gen_agent_proxy_index()
 
-    def _on_connect(self):
-        logging.info("{}".format(self))
-        asyncio.ensure_future(self._run(), loop=self._loop)
+    @property
+    def index(self):
+        return self._uIndex
 
-    def _on_dis_connect(self):
+    async def run(self):
         logging.info("{}".format(self))
-        super()._on_connect_fail()
 
-    async def _run(self):
-        logging.info("{}".format(self))
-        while self._EStateCTCPClient == tcp_client.EState.Connected:
-            self.send_pkg(b"hello")
-            await asyncio.sleep(3)
-            self.send_pkg(b"world!")
-            await asyncio.sleep(3)
+        self._CHost = CHost('127.0.0.1')
+        self._CPort = CPort(10001)
+
+        uLoopCount = 0
+        while uLoopCount < 3:
+            uLoopCount = uLoopCount + 1
+            if self.estate_tcp_client() != tcp_client.EState.Connected:
+                await self.connect()
+            strSendPkg = '{}_{}_pkg'.format(self.index, uLoopCount)
+            self.send_pkg(strSendPkg.encode())
+            await asyncio.sleep(1)
+        await self.disconnect("client close")
+
+        logging.info('leave {}'.format(self))
+
+    async def _on_recv_pkg(self, byData):
+        logging.info("{} byData:{}".format(self, byData))
+        await super()._on_recv_pkg(byData)
