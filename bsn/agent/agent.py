@@ -34,14 +34,14 @@ class CAgent(app.CApp):
     async def run(self):
         logging.info("{}".format(self))
 
-        oCAgentProxy = CAgentProxy(self, self._loop)
-        asyncio.ensure_future(oCAgentProxy.run(), loop = self._loop)
+        # oCAgentProxy = CAgentProxy(self, self._loop)
+        # asyncio.ensure_future(oCAgentProxy.run(), loop = self._loop)
 
-        oCAgentProxy = CAgentProxy(self, self._loop)
-        asyncio.ensure_future(oCAgentProxy.run(), loop = self._loop)
+        # oCAgentProxy = CAgentProxy(self, self._loop)
+        # asyncio.ensure_future(oCAgentProxy.run(), loop = self._loop)
 
-        oCAgentProxy = CAgentProxy(self, self._loop)
-        asyncio.ensure_future(oCAgentProxy.run(), loop = self._loop)
+        # oCAgentProxy = CAgentProxy(self, self._loop)
+        # asyncio.ensure_future(oCAgentProxy.run(), loop = self._loop)
 
         oCAgentProxy = CAgentProxy(self, self._loop)
         await oCAgentProxy.run()

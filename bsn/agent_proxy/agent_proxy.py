@@ -9,6 +9,7 @@ from bsn.common import err
 from bsn.common import tcp_server
 import logging
 from bsn.agent_proxy import agent
+from bsn.agent_proxy import agent_state_mgr
 import enum
 
 class CAgentProxy(tcp_server.CTCPServer):
@@ -38,5 +39,5 @@ class CAgentProxy(tcp_server.CTCPServer):
         logging.info("{}".format(self))
         while True:
             await asyncio.sleep(1)
-            for oAgent in self._Index2CAgent:
-                oAgent[1]._update()
+            for uIndex in self._Index2CAgent:
+                self._Index2CAgent[uIndex]._update()
