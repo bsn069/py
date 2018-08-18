@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: UTF-8 -*-
 
+from bsn.common import file_import_tree
+file_import_tree.file_begin(__name__)
+
 from bsn.common.ip import CIP
 from bsn.common.port import CPort
 from bsn.common import err
@@ -43,3 +46,6 @@ class CIPPort(object):
         return '0.0.0.0:2777'
         '''
         return '%s:%u' % (self.ip, self.port)
+
+        
+file_import_tree.file_end(__name__)

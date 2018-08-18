@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: UTF-8 -*-
+
+from bsn.common import file_import_tree
+file_import_tree.file_begin(__name__)
+
 import asyncio
 from bsn.common.ip_port import CIPPort
 from bsn.common.ip import CIP
@@ -8,9 +12,9 @@ from bsn.common import tcp_accept
 from bsn.common import err
 from bsn.common import tcp_server
 import logging
-from bsn.agent_proxy import agent
-from bsn.agent_proxy import agent_state_mgr
-import enum
+from bsn.agent_proxy.agent import agent
+
+
 
 class CAgentProxy(tcp_server.CTCPServer):
 
@@ -36,8 +40,11 @@ class CAgentProxy(tcp_server.CTCPServer):
         return oCAgent
  
     async def _run(self):
+        file_import_tree.file_print()
         logging.info("{}".format(self))
         while True:
             await asyncio.sleep(1)
             for uIndex in self._Index2CAgent:
                 self._Index2CAgent[uIndex]._update()
+
+file_import_tree.file_end(__name__)

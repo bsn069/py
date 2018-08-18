@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: UTF-8 -*-
 
+from bsn.common import file_import_tree
+file_import_tree.file_begin(__name__)
+
 import asyncio
 import enum
 import logging
@@ -57,3 +60,4 @@ class CMsgHead(object):
     def close(self):
         return self._transport.close()
         
+file_import_tree.file_end(__name__)

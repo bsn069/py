@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: UTF-8 -*-
+
+from bsn.common import file_import_tree
+file_import_tree.file_begin(__name__)
+
 import logging
 
 class CApp(object):
@@ -13,3 +17,4 @@ class CApp(object):
     def stop(self):
         logging.info("{}".format(self))
     
+file_import_tree.file_end(__name__)

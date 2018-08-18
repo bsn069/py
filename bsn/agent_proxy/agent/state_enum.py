@@ -4,15 +4,19 @@
 from bsn.common import file_import_tree
 file_import_tree.file_begin(__name__)
 
-import re
-from bsn.common import err
+import enum
  
 
-class CHost(object):
-    def __init__(self, host):
-        self._host = host
 
-    def __str__(self):
-        return self._host
+
+
+class EState(enum.Enum):
+    Init = 0
+    Connected = 1
+    DisConnect = 2
+    WaitLogin = 3
+
+    Count = 4
+
 
 file_import_tree.file_end(__name__)

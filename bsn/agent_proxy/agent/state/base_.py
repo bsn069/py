@@ -1,14 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: UTF-8 -*-
 
+from bsn.common import file_import_tree
+file_import_tree.file_begin(__name__)
+
 import asyncio
 import enum
 import logging
-from bsn.common import tcp_session
-from bsn.common import err
- 
 
-class CAgentState(object):
+
+class CState(object):
     """ 
     """
 
@@ -25,13 +26,14 @@ class CAgentState(object):
     def to_state(self, EState_To):
         self.agent.state_mgr.to_state(EState_To)
 
-    def leave(self):
+    def enter(self):
         logging.info("{}".format(self))
 
-    def enter(self):
+    def leave(self):
         logging.info("{}".format(self))
 
     def proc_pkg(self, byPkg):
         logging.info("{} {}".format(self, byPkg))
     
- 
+
+file_import_tree.file_end(__name__)

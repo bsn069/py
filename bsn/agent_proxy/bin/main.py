@@ -1,8 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: UTF-8 -*-
 
-from bsn.agent_proxy.agent_proxy import CAgentProxy
+
+import logging
+logging.basicConfig(level = logging.INFO, format = '%(asctime)s %(levelname)s %(filename)s:%(lineno)d(%(funcName)s) %(message)s')
+
 from bsn.common import asyncio_app
+from bsn.agent_proxy.agent_proxy import CAgentProxy
 
 def create_app(loop):
     return CAgentProxy(loop)

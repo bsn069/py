@@ -1,19 +1,17 @@
 #!/usr/bin/env python3
 # -*- coding: UTF-8 -*-
 
+from bsn.common import file_import_tree
+file_import_tree.file_begin(__name__)
+
 import asyncio
 import enum
 import logging
 from bsn.common import tcp_session
 from bsn.common import err
-from bsn.agent_proxy import agent_state
-from bsn.agent_proxy import agent_state_mgr
 
-class EState(enum.Enum):
-    Null = 0
-    WaitConnect = 1
-    Runing = 2
-    WaitClose = 3
+from bsn.agent_proxy.agent import state_enum
+from bsn.agent_proxy.agent import state_mgr
 
 class CAgent(tcp_session.CTCPSession):
     """ 
@@ -27,16 +25,16 @@ class CAgent(tcp_session.CTCPSession):
 
         self._CAgentProxy = oCAgentProxy
         self._uCreateIndex = uCreateIndex
-        self._CAgentStateMgr = agent_state_mgr.CAgentStateMgr(self)
+        self._CStateMgr = state_mgr.CStateMgr(self)
 
     def connection_made(self, transport):
         logging.info("{} {}".format(self, transport))
         super().connection_made(transport)
-        self.state_mgr.to_state(agent_state_mgr.EState.Connected)
+        self.state_mgr.to_state(state_enum.EState.Connected)
        
     def connection_lost(self, exc):
         logging.info("{} {}".format(self, exc))
-        self.state_mgr.to_state(agent_state_mgr.EState.DisConnect)
+        self.state_mgr.to_state(state_enum.EState.DisConnect)
         super().connection_lost(exc)
 
     def _on_recv_pkg(self, byData):
@@ -49,6 +47,7 @@ class CAgent(tcp_session.CTCPSession):
         
     @property
     def state_mgr(self):
-        return self._CAgentStateMgr
-    
- 
+        return self._CStateMgr
+
+
+file_import_tree.file_end(__name__)

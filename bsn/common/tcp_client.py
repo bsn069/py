@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: UTF-8 -*-
 
+from bsn.common import file_import_tree
+file_import_tree.file_begin(__name__)
+
 import asyncio
 import enum
 import logging
@@ -154,5 +157,5 @@ class CTCPClient(object):
         raw_sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, flag)
         transport.resume_reading()
 
-
+file_import_tree.file_end(__name__)
 
