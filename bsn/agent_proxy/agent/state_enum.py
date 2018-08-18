@@ -15,8 +15,9 @@ class EState(enum.Enum):
     Connected = 1
     DisConnect = 2
     WaitLogin = 3
+    LoginSuccess = 4
 
-    Count = 4
+    Count = 5
 
 
 file_import_tree.file_end(__name__)

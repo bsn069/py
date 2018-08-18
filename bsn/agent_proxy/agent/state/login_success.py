@@ -14,7 +14,7 @@ from bsn.agent_proxy.agent import state_mgr
 class CState(base_.CState):
     """ 
     """
-    C_EState = state_enum.EState.WaitLogin
+    C_EState = state_enum.EState.LoginSuccess
 
     def __init__(self, oCAgent):
         """
@@ -30,7 +30,6 @@ class CState(base_.CState):
 
     def proc_pkg(self, byPkg):
         logging.info("{} {}".format(self, byPkg))
-        self.to_state(state_enum.EState.LoginSuccess)
 
 
 def create_func(oCAgent):
