@@ -28,6 +28,7 @@ class CState(base_.CState):
 
     def enter(self):
         logging.info("{}".format(self))
+        self.to_state(state_enum.EState.WaitLogin)
 
     def proc_pkg(self, byPkg):
         logging.info("{} {}".format(self, byPkg))

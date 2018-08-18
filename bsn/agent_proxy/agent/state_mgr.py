@@ -34,7 +34,7 @@ class CStateMgr(object):
         self._CAgentState = {}
         for uIndex in CStateMgr.StateCreateFun:
             funcCreate = CStateMgr.StateCreateFun[uIndex]
-            self._CAgentState[uIndex] = funcCreate(self)
+            self._CAgentState[uIndex] = funcCreate(oCAgent)
         self._CAgentStateCur = self._CAgentState[state_enum.EState.Init.value]
 
     def to_state(self, EState_To):
