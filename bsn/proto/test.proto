@@ -1,0 +1,12 @@
+syntax = "proto3";  
+import 'comm.proto';
+package bsn.pb.test;  
+  
+message MTest {  
+    int32 id = 1;  
+    comm.MTest t = 2;
+}  
+
+message MLogin {  
+    int32 id = 1;  
+}  
