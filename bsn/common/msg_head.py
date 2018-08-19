@@ -15,49 +15,64 @@ from bsn.common import err
 class CMsgHead(object):
     """ 
     """
+    LengthBit = 2
+    CmdBit = 2
+    Bit = LengthBit + CmdBit
 
     def __init__(self):
         """
         """
-        logging.info("{}".format(self))
+        # logging.info("{}".format(self))
         self._length = 0
-        self._id = 0
+        self._cmd = 0
 
     @property
-    def id(self):
-        return self._id
+    def length(self):
+        return self._length
+
+    @length.setter
+    def length(self, v):
+        self._length = v
         
     @property
-    def id(self):
-        return self._id
+    def cmd(self):
+        return self._cmd
 
-    def connection_made(self, transport):
-        logging.info("{}".format(self))
-        self._transport = transport
-        self._EStateCTCPSession = EState.Connected
+    @cmd.setter
+    def cmd(self, v):
+        self._cmd = v
 
-    def connection_lost(self, exc):
-        logging.info("{}".format(self))
-        self._EStateCTCPSession = EState.DisConnected
+    def __str__(self):
+        return 'cmd={} length={}'.format(self.cmd, self.length)
 
-    def data_received(self, data):
-        logging.info("{} {}".format(self, data))
-        self._read_buff.append(data)
+    def serialize(self):
+        '''
+        return byte
+        '''
+        logging.info("{} ".format(self))
 
-    def eof_received(self):
-        logging.info("{}".format(self))
+        byBuf = bytearray()
 
-    def write(self, data):
-        logging.info("{} {}".format(self, data))
-        self._write_buff.append(data)
+        byTmp = self.length.to_bytes(self.LengthBit, byteorder='little')
+        byBuf.extend(byTmp)
 
-    def flush(self):
-        self._transport.write(self._write_buff)
+        byTmp = self.cmd.to_bytes(self.CmdBit, byteorder='little')
+        byBuf.extend(byTmp)
 
-    def read(self):
-        return self._read_buff
+        return bytes(byBuf)
 
-    def close(self):
-        return self._transport.close()
-        
+    def parse(self, byData):
+        logging.info("{} ".format(self))
+
+        uIndex = 0
+
+        uIndexEnd = uIndex + self.LengthBit
+        self._length = int.from_bytes(byData[uIndex:uIndexEnd], 'little')
+        uIndex = uIndexEnd
+
+        uIndexEnd = uIndex + self.CmdBit
+        self._cmd = int.from_bytes(byData[uIndex:uIndexEnd], 'little')
+        uIndex = uIndexEnd
+
+
 file_import_tree.file_end(__name__)
