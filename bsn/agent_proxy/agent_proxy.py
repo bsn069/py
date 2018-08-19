@@ -14,7 +14,7 @@ from bsn.common import tcp_server
 import logging
 from bsn.agent_proxy.agent import agent
 
-
+from bsn.pb import comm_pb2
 
 class CAgentProxy(tcp_server.CTCPServer):
 
@@ -42,6 +42,17 @@ class CAgentProxy(tcp_server.CTCPServer):
     async def _run(self):
         file_import_tree.file_print()
         logging.info("{}".format(self))
+
+        oMTest = comm_pb2.MTest()
+        oMTest.id = 1
+        oMTest.name = 'abc'
+        print(oMTest)
+        byOut = oMTest.SerializeToString()
+        print(byOut)
+        oMTest2 = comm_pb2.MTest()
+        oMTest2.ParseFromString(byOut)
+        print(oMTest2)
+
         while True:
             await asyncio.sleep(1)
             for uIndex in self._Index2CAgent:

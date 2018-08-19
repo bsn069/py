@@ -3,10 +3,8 @@ import 'comm.proto';
 package bsn.pb.test;  
   
 message MTest {  
-    int32 id = 1;  
-    comm.MTest t = 2;
+    int32 v1 = 1;  
+    comm.MTest v2 = 2;
+    bsn.pb.comm.MTest v3 = 3;
 }  
 
-message MLogin {  
-    int32 id = 1;  
-}  
