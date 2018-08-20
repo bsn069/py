@@ -44,12 +44,7 @@ class CAgentProxy(tcp_client.CTCPClient):
             if self.estate_tcp_client() != tcp_client.EState.Connected:
                 await self.connect()
             strSendPkg = '{}_{}_pkg'.format(self.index, uLoopCount)
-            self.send_pkg(strSendPkg.encode())
             await asyncio.sleep(1)
+            self.send_pkg(1, strSendPkg.encode())
         await self.disconnect("client close")
 
-        logging.info('leave {}'.format(self))
-
-    async def _on_recv_pkg(self, byData):
-        logging.info("{} byData:{}".format(self, byData))
-        await super()._on_recv_pkg(byData)

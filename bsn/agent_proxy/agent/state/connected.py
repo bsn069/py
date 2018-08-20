@@ -30,8 +30,6 @@ class CState(base_.CState):
         logging.info("{}".format(self))
         self.to_state(state_enum.EState.WaitLogin)
 
-    def proc_pkg(self, byPkg):
-        logging.info("{} {}".format(self, byPkg))
 
 
 def create_func(oCAgent):

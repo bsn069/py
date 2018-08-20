@@ -28,9 +28,6 @@ class CState(base_.CState):
     def enter(self):
         logging.info("{}".format(self))
 
-    def proc_pkg(self, byPkg):
-        logging.info("{} {}".format(self, byPkg))
-
 
 def create_func(oCAgent):
     logging.info("{}".format(oCAgent))

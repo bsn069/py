@@ -14,12 +14,14 @@ from bsn.common import msg_head
 from bsn.common import msg
 
 
-class CMsgParse(object):
+class CMsgRecvPkg(object):
     """ 
     """
 
-    def __init__(self):
+    def __init__(self, funOnRecvMsg):
         """
+        funOnRecvMsg
+            def (msg.CMsg())
         """
         logging.info("{}".format(self))
 
@@ -27,17 +29,18 @@ class CMsgParse(object):
         self._bWaitHead = True
         self._uWaitLength = self._CMsg.head.Bit
         self._CMsg = msg.CMsg()
-
-    def on_recv_msg(self, oCMsg):
-        pass
+        self._funOnRecvMsg = funOnRecvMsg
+        self._uRecvPkgCount = 0
+        self._uRecvByteCount = 0
 
     def _wait_head(self):
-        self.on_recv_msg(self._CMsg)
+        self._funOnRecvMsg(self._CMsg)
         self._CMsg = msg.CMsg()
         self._bWaitHead = True
         self._uWaitLength = self._CMsg.head.Bit
 
     def _parse_head(self, data):
+        self._uRecvPkgCount = self._uRecvPkgCount + 1
         self._CMsg.head.parse(data)
         if self._uWaitLength > 0:
             self._uWaitLength = self._CMsg.head.length
@@ -49,11 +52,15 @@ class CMsgParse(object):
         self._CMsg.body = data
         self._wait_head()
 
+    def __str__(self):
+        return 'CMsgRecvPkg[pkg={} byte={}]'.format(self._uRecvPkgCount, self._uRecvByteCount)
+
     def proc_data(self, data):
         logging.info("{} type(data):{} {} len(data):{}".format(self, type(data), data, len(data)))
         uDataLength = len(data)
         uProcBegin = 0
         uLeftDataLength = uDataLength
+        self._uRecvByteCount = self._uRecvByteCount + uDataLength
 
         while uLeftDataLength > 0:
             if uLeftDataLength >= self._uWaitLength:

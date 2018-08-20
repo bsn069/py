@@ -11,7 +11,9 @@ import socket
 from bsn.common.port import CPort
 from bsn.common.host import CHost
 from bsn.common import err
-
+from bsn.common import msg_send_pkg
+from bsn.common import msg_head
+from bsn.common import msg
 
 class EState(enum.Enum):
     Null = 0
@@ -25,6 +27,8 @@ class CTCPClient(object):
 
     def __init__(self, loop):
         logging.info("{}".format(self))
+        self._CMsgSendPkg = msg_send_pkg.CMsgSendPkg(self.send)
+
         self._reader = None
         self._writer = None
 
@@ -38,12 +42,14 @@ class CTCPClient(object):
         self._uRetryCountMax = 30
         self._uRetryDelaySec = 1
         
-        self._uPkgLengthBit = 2 # pkg length value use bit
-        self._uPkgLengthMax = 10 # pkg length value max
-        self._uRecvByte = 0
-        self._uSendByte = 0
-        self._uRecvPkg = 0
-        self._uSendPkg = 0
+    async def on_recv_msg(self, cmd, byData):
+        '''
+        '''
+        yield
+
+    def send_pkg(self, cmd, data):
+        logging.info("{} cmd={}".format(self, cmd))
+        self._CMsgSendPkg.send_pkg(cmd, data)
 
     def estate_tcp_client(self):
         return self._EStateCTCPClient
@@ -79,31 +85,26 @@ class CTCPClient(object):
     async def _recv_loop(self):
         logging.info("{}".format(self))
         try:
+            oCMsgHead = msg_head.CMsgHead()
             while self._EStateCTCPClient == EState.Connected:
-                head = await self.read_bytes(self._uPkgLengthBit)
-                pkgLength = int.from_bytes(head, 'little')
-                logging.info("{} head:{} pkgLength:{}".format(self, head, pkgLength))
-                if pkgLength > self._uPkgLengthMax:
-                    logging.info("{} head:{} pkgLength:{} self._uPkgLengthMax:{}".format(self, head, pkgLength, self._uPkgLengthMax))
-                    asyncio.ensure_future(self.disconnect("pkg too big"), loop = self._loop)
-                    return
-                pkgData = await self.read_bytes(pkgLength)
-                await self._on_recv_pkg(pkgData)
+                byHeadData = await self._reader.readexactly(oCMsgHead.Bit)
+                oCMsgHead.parse(byHeadData)
+                if oCMsgHead.length > 0:
+                    byBodyData = await self._reader.readexactly(oCMsgHead.length)
+                    self.on_recv_msg(oCMsgHead.cmd, byBodyData)
+                else:
+                    self.on_recv_msg(oCMsgHead.cmd, b'')
         except asyncio.streams.IncompleteReadError as e:
             logging.error(e)
 
-    async def _on_recv_pkg(self, byData):
-        logging.info("{} byData:{}".format(self, byData))
-        self._uRecvPkg = self._uRecvPkg + 1
-        yield
 
     async def disconnect(self, strWhy):
         logging.info("{} {}".format(self, strWhy))
         if self._EStateCTCPClient != EState.Connected:
             raise err.ErrState(self._EStateCTCPClient)
 
-        await self.wait_all_send()
-  
+        # await self.wait_all_send()
+        await asyncio.sleep(1)
         if self._writer:
             self._writer.transport.close()
         self._writer = None
@@ -111,24 +112,11 @@ class CTCPClient(object):
 
         logging.info('leave {}'.format(self))
                 
-    def send_pkg(self, data):
-        self._uSendPkg = self._uSendPkg + 1
-        length = len(data)
-        byLength = length.to_bytes(2, byteorder='little')
-        self.send(byLength)
-        self.send(data)
-
     def send(self, data):
-        self._uSendByte = self._uSendByte + 1
         return self._writer.write(data)
 
     async def wait_all_send(self):
         await self._writer.drain()
-
-    async def read_bytes(self, num_bytes):
-        data = await self._reader.readexactly(num_bytes)
-        self._uRecvByte = self._uRecvByte + len(data)
-        return data
 
     @property
     def host(self):

@@ -37,9 +37,8 @@ class CAgent(tcp_session.CTCPSession):
         self.state_mgr.to_state(state_enum.EState.DisConnect)
         super().connection_lost(exc)
 
-    def _on_recv_pkg(self, byData):
-        logging.info("{} byData:{}".format(self, byData))
-        self.state_mgr.proc_pkg(byData)
+    def on_recv_msg(self, oCMsg):
+        self.state_mgr.on_recv_msg(oCMsg)
 
     def _update(self):
         # logging.info("{}".format(self))

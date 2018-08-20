@@ -27,9 +27,9 @@ class CState(base_.CState):
 
     def enter(self):
         logging.info("{}".format(self))
-
-    def proc_pkg(self, byPkg):
-        logging.info("{} {}".format(self, byPkg))
+        
+    def on_recv_msg(self, oCMsg):
+        logging.info("{} {}".format(self, oCMsg))
 
 
 def create_func(oCAgent):

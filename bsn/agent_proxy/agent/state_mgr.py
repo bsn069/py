@@ -49,8 +49,8 @@ class CStateMgr(object):
         self._CAgentStateCur = CAgentState_New
         CAgentState_New.enter()
 
-    def proc_pkg(self, byPkg):
-        logging.info("{} {}".format(self, byPkg))
-        self._CAgentStateCur.proc_pkg(byPkg)
+    def on_recv_msg(self, oCMsg):
+        logging.info("{} {}".format(self, oCMsg))
+        self._CAgentStateCur.on_recv_msg(oCMsg)
 
 file_import_tree.file_end(__name__)
