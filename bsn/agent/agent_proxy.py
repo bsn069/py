@@ -1,48 +1,61 @@
 #!/usr/bin/env python3
 # -*- coding: UTF-8 -*-
 
+from bsn.common import file_import_tree
+file_import_tree.file_begin(__name__)
+
 import asyncio
-import enum
-import logging
-from bsn.common import tcp_client
-from bsn.common import err
+from bsn.common.ip_port import CIPPort
+from bsn.common.ip import CIP
 from bsn.common.port import CPort
-from bsn.common.host import CHost
+from bsn.common import tcp_accept
+from bsn.common import err
+from bsn.common import tcp_server
+import logging
+from bsn.agent_proxy.agent import agent
 
-class EState(enum.Enum):
-    Null = 0
-    WaitConnect = 1
-    Runing = 2
-    WaitClose = 3
+from bsn.pb import comm_pb2
 
-class CAgentProxy(tcp_client.CTCPClient):
-    """ 
-    """
+class CAgentProxy(tcp_server.CTCPServer):
 
-    def __init__(self, oCAgent, loop):
-        """
-        """
+    def __init__(self, loop):
         logging.info("{}".format(self))
+
         super().__init__(loop)
 
-        self._CAgent = oCAgent
-        self._uIndex = oCAgent.gen_agent_proxy_index()
+        self._Index2CAgent = {}
+        self._uCreateIndex = 0
 
-    @property
-    def index(self):
-        return self._uIndex
+    def getAgentByCreateIndex(self, uCreateIndex):
+        return self._Index2CAgent[uCreateIndex]
 
-    async def run(self):
+    def _create_session(self):
+        '''
+        tcp_session.CTCPSession()
+        '''
+        logging.info("{}".format(self))
+        self._uCreateIndex = self._uCreateIndex + 1
+        oCAgent = agent.CAgent(self, self._uCreateIndex)
+        self._Index2CAgent[self._uCreateIndex] = oCAgent
+        return oCAgent
+ 
+    async def _run(self):
+        file_import_tree.file_print()
         logging.info("{}".format(self))
 
-        self._CHost = CHost('127.0.0.1')
-        self._CPort = CPort(10001)
+        oMTest = comm_pb2.MTest()
+        oMTest.id = 1
+        oMTest.name = 'abc'
+        print(oMTest)
+        byOut = oMTest.SerializeToString()
+        print(byOut)
+        oMTest2 = comm_pb2.MTest()
+        oMTest2.ParseFromString(byOut)
+        print(oMTest2)
 
-        uLoopCount = 0
-        while uLoopCount < 3:
-            uLoopCount = uLoopCount + 1
-            strSendPkg = '{}_{}_pkg'.format(self.index, uLoopCount)
+        while True:
             await asyncio.sleep(1)
-            self.send_pkg(1, strSendPkg.encode())
-        await self.disconnect("client close")
+            for uIndex in self._Index2CAgent:
+                self._Index2CAgent[uIndex]._update()
 
+file_import_tree.file_end(__name__)
