@@ -41,8 +41,6 @@ class CAgentProxy(tcp_client.CTCPClient):
         uLoopCount = 0
         while uLoopCount < 3:
             uLoopCount = uLoopCount + 1
-            if self.estate_tcp_client() != tcp_client.EState.Connected:
-                await self.connect()
             strSendPkg = '{}_{}_pkg'.format(self.index, uLoopCount)
             await asyncio.sleep(1)
             self.send_pkg(1, strSendPkg.encode())

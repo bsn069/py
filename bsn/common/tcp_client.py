@@ -17,7 +17,11 @@ from bsn.common import msg
 
 class EState(enum.Enum):
     Null = 0
-    Connected = 1
+    Connecting = 1
+    Connected = 2
+    ConnectFail = 3
+    ConnectBeDisconnect = 4
+    DisConnect = 5
 
 
 
@@ -39,8 +43,6 @@ class CTCPClient(object):
 
         self._loop = loop
 
-        self._uRetryCountMax = 30
-        self._uRetryDelaySec = 1
         
     async def on_recv_msg(self, cmd, byData):
         '''
@@ -49,44 +51,60 @@ class CTCPClient(object):
 
     def send_pkg(self, cmd, data):
         logging.info("{} cmd={}".format(self, cmd))
-        self._CMsgSendPkg.send_pkg(cmd, data)
+        return self._CMsgSendPkg.send_pkg(cmd, data)
 
     def estate_tcp_client(self):
         return self._EStateCTCPClient
 
+    def is_connected(self):
+        return self.estate_tcp_client() == EState.Connected
+
     async def connect(self):
         '''
+        '''
+        logging.info("{} {} {}".format(self, self._CHost, self._CPort))
+        if self.estate_tcp_client() != EState.Null:
+            raise err.ErrState(self.estate_tcp_client())
+
+        await self._connect(1)
+
+    async def _connect(self, uRetryWaitSec):
+        '''
+        uRetryWaitSec
+            连接失败 重试等待秒
         '''
         logging.info("{} {} {}".format(self, self._CHost, self._CPort))
         if type(self._CHost) != CHost:
             raise err.ErrHost(self._CHost)
         if type(self._CPort) != CPort:
             raise err.ErrPort(self._CPort)
-        if self._EStateCTCPClient != EState.Null:
-            raise err.ErrState(self._EStateCTCPClient)
+        if self.estate_tcp_client() == EState.Connected:
+            raise err.ErrState(self.estate_tcp_client())
 
-        uRetryCount = 0
-        while True:
+        self._EStateCTCPClient = EState.Connecting
+        while self.estate_tcp_client() == EState.Connecting:
             try:
                 self._reader, self._writer = await asyncio.open_connection(str(self._CHost), str(self._CPort), loop=self._loop)
                 break
             except ConnectionRefusedError as e:
                 logging.error(e)
-                if uRetryCount >= self._uRetryCountMax:
-                    return err.ErrConnectFail(e)
-                uRetryCount = uRetryCount + 1
-                await asyncio.sleep(self._uRetryDelaySec)
+                await asyncio.sleep(uRetryWaitSec)  
+
+        if self._reader is None or self._writer is None:
+            logging.info("{} connect fail state={}".format(self, self.estate_tcp_client()))
+            return
+        logging.info("{} connect success state={}".format(self, self.estate_tcp_client()))
 
         self._set_keep_alive()
         self._set_nodelay(True)
         self._EStateCTCPClient = EState.Connected
         asyncio.ensure_future(self._recv_loop(), loop = self._loop)
-
+            
     async def _recv_loop(self):
         logging.info("{}".format(self))
         try:
             oCMsgHead = msg_head.CMsgHead()
-            while self._EStateCTCPClient == EState.Connected:
+            while self.estate_tcp_client() == EState.Connected:
                 byHeadData = await self._reader.readexactly(oCMsgHead.Bit)
                 oCMsgHead.parse(byHeadData)
                 if oCMsgHead.length > 0:
@@ -96,23 +114,34 @@ class CTCPClient(object):
                     self.on_recv_msg(oCMsgHead.cmd, b'')
         except asyncio.streams.IncompleteReadError as e:
             logging.error(e)
+            if self.estate_tcp_client() == EState.Connected:
+                logging.info("{} peer disconnect".format(self))
+                self._EStateCTCPClient = EState.ConnectBeDisconnect
+                asyncio.ensure_future(self._connect(1), loop = self._loop)
+                return
 
+        if self.estate_tcp_client() == EState.Connected:
+            await self.disconnect('recv loop')
+
+        self._writer = None
+        self._reader = None
 
     async def disconnect(self, strWhy):
         logging.info("{} {}".format(self, strWhy))
-        if self._EStateCTCPClient != EState.Connected:
-            raise err.ErrState(self._EStateCTCPClient)
+        if self.estate_tcp_client() != EState.Connected:
+            raise err.ErrState(self.estate_tcp_client())
 
         # await self.wait_all_send()
-        await asyncio.sleep(1)
         if self._writer:
             self._writer.transport.close()
-        self._writer = None
-        self._reader = None
+        while self.estate_tcp_client() == EState.Connected:
+            await asyncio.sleep(1)
 
         logging.info('leave {}'.format(self))
                 
     def send(self, data):
+        if not self.is_connected():
+            return False
         return self._writer.write(data)
 
     async def wait_all_send(self):

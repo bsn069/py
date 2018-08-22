@@ -20,8 +20,9 @@ class CMsgSendPkg(object):
 
     def __init__(self, funSendData):
         """
-        funSendData 
-            def (byData):
+        in
+            funSendData function
+                def (byte):
         """
         self._CMsgForSend = msg.CMsg()
         self._funSendData = funSendData
@@ -29,13 +30,22 @@ class CMsgSendPkg(object):
         self._uSendByteCount = 0
 
     def send_pkg(self, cmd, data):
+        '''
+        in 
+            cmd     int 
+                command
+            data    byte 
+        ret
+            bool 
+                is send ok
+        '''
         logging.info("{} cmd={}".format(self, cmd))
         self._uSendPkgCount = self._uSendPkgCount + 1
         self._CMsgForSend.cmd = cmd
         self._CMsgForSend.body = data
         byData = self._CMsgForSend.serialize()
         self._uSendByteCount = self._uSendByteCount + len(byData)
-        self._funSendData(byData)
+        return self._funSendData(byData)
 
     def __str__(self):
         return 'CMsgSendPkg[pkg={} byte={}]'.format(self._uSendPkgCount, self._uSendByteCount)
