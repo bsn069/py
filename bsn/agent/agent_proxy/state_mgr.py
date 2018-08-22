@@ -31,26 +31,28 @@ class CStateMgr(object):
         """
         logging.info("{}".format(self))
 
-        self._CAgentState = {}
+        self._CState = {}
         for uIndex in CStateMgr.StateCreateFun:
             funcCreate = CStateMgr.StateCreateFun[uIndex]
-            self._CAgentState[uIndex] = funcCreate(oCAgent)
-        self._CAgentStateCur = self._CAgentState[state_enum.EState.Init.value]
+            self._CState[uIndex] = funcCreate(oCAgent)
+        self._oCStateCur = self._CState[state_enum.EState.Init.value]
 
     def to_state(self, EState_To):
         '''
         '''
         logging.info("{} {}".format(self, EState_To))
-        CAgentState_Old = self._CAgentStateCur 
-        CAgentState_New = self._CAgentState[EState_To.value]
+        CAgentState_Old = self._oCStateCur 
+        CAgentState_New = self._CState[EState_To.value]
         if CAgentState_Old is CAgentState_New:
             return
         CAgentState_Old.leave()
-        self._CAgentStateCur = CAgentState_New
+        self._oCStateCur = CAgentState_New
         CAgentState_New.enter()
 
-    def on_recv_msg(self, oCMsg):
-        logging.info("{} {}".format(self, oCMsg))
-        self._CAgentStateCur.on_recv_msg(oCMsg)
+    async def on_recv_msg(self, u16Cmd, byData):
+        '''
+        '''
+        logging.info("{} u16Cmd={}".format(self, u16Cmd))
+        await self._oCStateCur.on_recv_msg(u16Cmd, byData)
 
 file_import_tree.file_end(__name__)

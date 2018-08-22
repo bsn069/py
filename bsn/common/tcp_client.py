@@ -44,14 +44,14 @@ class CTCPClient(object):
         self._loop = loop
 
         
-    async def on_recv_msg(self, cmd, byData):
+    async def on_recv_msg(self, u16Cmd, byData):
         '''
         '''
         yield
 
-    def send_pkg(self, cmd, data):
-        logging.info("{} cmd={}".format(self, cmd))
-        return self._CMsgSendPkg.send_pkg(cmd, data)
+    def send_pkg(self, u16Cmd, byData):
+        logging.info("{} u16Cmd={}".format(self, u16Cmd))
+        return self._CMsgSendPkg.send_pkg(u16Cmd, byData)
 
     def estate_tcp_client(self):
         return self._EStateCTCPClient
