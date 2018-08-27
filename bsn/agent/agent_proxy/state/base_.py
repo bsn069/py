@@ -13,18 +13,26 @@ class CState(object):
     """ 
     """
 
-    def __init__(self, oCAgent):
+    def __init__(self, oOwner):
         """
+        oOwner CAgentProxy
         """
         logging.info("{}".format(self))
-        self._CAgent = oCAgent 
+        self._oOwner = oOwner 
 
     @property
-    def agent(self):
-        return self._CAgent
+    def owner(self):
+        return self._oOwner
+
+    @property
+    def state_mgr(self):
+        return self.owner.state_mgr
 
     def to_state(self, EState_To):
-        self.agent.state_mgr.to_state(EState_To)
+        '''
+        EState_To state_enum.EState.
+        '''
+        self.owner.to_state(EState_To)
 
     def enter(self):
         logging.info("{}".format(self))
@@ -32,8 +40,8 @@ class CState(object):
     def leave(self):
         logging.info("{}".format(self))
 
-    def on_recv_msg(self, oCMsg):
-        logging.info("{} {}".format(self, oCMsg))
+    def on_recv_msg(self, u16Cmd, byData):
+        logging.info("{} u16Cmd={}".format(self, u16Cmd))
     
 
 file_import_tree.file_end(__name__)

@@ -21,10 +21,34 @@ class CAgent(object):
     def __init__(self, loop):
         logging.info("{}".format(self))
 
+        self._loop = loop
+        self._Index2CAgentProxy = {}
+        self._uCreateIndex = 0
+
+    def _create_agent_proxy(self):
+        '''
+        '''
+        logging.info("{}".format(self))
+        self._uCreateIndex = self._uCreateIndex + 1
+        oCAgentProxy = agent_proxy.CAgentProxy(self, self._uCreateIndex)
+        self._Index2CAgentProxy[self._uCreateIndex] = oCAgentProxy
+        return oCAgentProxy
+
     async def _run(self):
         file_import_tree.file_print()
         logging.info("{}".format(self))
 
+        self._create_agent_proxy()
+        while True:
+            await asyncio.sleep(1)
+
+    async def run(self):
+        logging.info("{}".format(self))
+        await self._run()
+
+    @property
+    def loop(self):
+        return self._loop
         
 
 file_import_tree.file_end(__name__)

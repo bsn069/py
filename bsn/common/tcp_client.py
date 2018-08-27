@@ -43,6 +43,9 @@ class CTCPClient(object):
 
         self._loop = loop
 
+    @property
+    def loop(self):
+        return self._loop
         
     async def on_recv_msg(self, u16Cmd, byData):
         '''

@@ -16,7 +16,7 @@ from bsn.common.host import CHost
 class CState(base_.CState):
     """ 
     """
-    C_EState = state_enum.EState.Init
+    C_EState = state_enum.EState.WaitConnect
 
     def __init__(self, oOwner):
         """
@@ -25,7 +25,10 @@ class CState(base_.CState):
 
     def enter(self):
         logging.info("{}".format(self))
-
+        self.owner.set_host_port(CHost('127.0.0.1'), CPort(10001))
+        self.to_state(state_enum.EState.WaitConnect)
+        asyncio.ensure_future(self.owner.connect(), loop=self.owner.loop)
+        
 
     def leave(self):
         logging.info("{}".format(self))
