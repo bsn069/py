@@ -12,6 +12,7 @@ from bsn.agent.agent_proxy import state_enum
 from bsn.agent.agent_proxy import state_mgr
 from bsn.common.port import CPort
 from bsn.common.host import CHost
+from bsn.pb import comm_pb2
 
 class CState(base_.CState):
     """ 
@@ -25,7 +26,18 @@ class CState(base_.CState):
 
     def enter(self):
         logging.info("{}".format(self))
-        self.send_pkg(1, b'')
+
+        oMTest = comm_pb2.MTest()
+        oMTest.id = 1
+        oMTest.name = 'abc'
+        print(oMTest)
+        byOut = oMTest.SerializeToString()
+        print(byOut)
+        oMTest2 = comm_pb2.MTest()
+        oMTest2.ParseFromString(byOut)
+        print(oMTest2)
+
+        self.send_pkg(1, byOut)
 
 
     def leave(self):
