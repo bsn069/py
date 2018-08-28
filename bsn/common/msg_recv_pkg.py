@@ -27,8 +27,8 @@ class CMsgRecvPkg(object):
 
         self._byReadBuf = bytearray()
         self._bWaitHead = True
-        self._uWaitLength = self._CMsg.head.Bit
         self._CMsg = msg.CMsg()
+        self._uWaitLength = self._CMsg.head.Bit
         self._funOnRecvMsg = funOnRecvMsg
         self._uRecvPkgCount = 0
         self._uRecvByteCount = 0
@@ -40,9 +40,10 @@ class CMsgRecvPkg(object):
         self._uWaitLength = self._CMsg.head.Bit
 
     def _parse_head(self, data):
+        logging.info("{} {}".format(self, data))
         self._uRecvPkgCount = self._uRecvPkgCount + 1
         self._CMsg.head.parse(data)
-        if self._uWaitLength > 0:
+        if self._CMsg.head.length > 0:
             self._uWaitLength = self._CMsg.head.length
             self._bWaitHead = False
         else:
@@ -52,8 +53,8 @@ class CMsgRecvPkg(object):
         self._CMsg.body = data
         self._wait_head()
 
-    def __str__(self):
-        return 'CMsgRecvPkg[pkg={} byte={}]'.format(self._uRecvPkgCount, self._uRecvByteCount)
+    # def __str__(self):
+    #     return 'CMsgRecvPkg[pkg={} byte={}]'.format(self._uRecvPkgCount, self._uRecvByteCount)
 
     def proc_data(self, data):
         logging.info("{} type(data):{} {} len(data):{}".format(self, type(data), data, len(data)))

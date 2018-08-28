@@ -24,7 +24,9 @@ class CMsgSendPkg(object):
             funSendData function
                 def (byte):
         """
+        logging.info("1{} ".format(self))
         self._CMsgForSend = msg.CMsg()
+        logging.info("2{} ".format(self))
         self._funSendData = funSendData
         self._uSendPkgCount = 0
         self._uSendByteCount = 0
@@ -47,7 +49,7 @@ class CMsgSendPkg(object):
         self._uSendByteCount = self._uSendByteCount + len(byData)
         return self._funSendData(byData)
 
-    def __str__(self):
-        return 'CMsgSendPkg[pkg={} byte={}]'.format(self._uSendPkgCount, self._uSendByteCount)
+    # def __str__(self):
+    #     return 'CMsgSendPkg[pkg={} byte={}]'.format(self._uSendPkgCount, self._uSendByteCount)
 
 file_import_tree.file_end(__name__)        

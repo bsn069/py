@@ -44,4 +44,7 @@ class CState(object):
         logging.info("{} u16Cmd={}".format(self, u16Cmd))
     
 
+    def send_pkg(self, u16Cmd, byData):
+        self.owner.send_pkg(u16Cmd, byData)
+
 file_import_tree.file_end(__name__)

@@ -26,9 +26,11 @@ class CTCPSession(asyncio.protocols.Protocol):
     def __init__(self):
         """
         """
-        logging.info("{}".format(self))
+        logging.info("1{}".format(self))
         self._CMsgSendPkg = msg_send_pkg.CMsgSendPkg(self.send)
+        logging.info("2{}".format(self))
         self._CMsgRecvPkg = msg_recv_pkg.CMsgRecvPkg(self.on_recv_msg)
+        logging.info("3{}".format(self))
 
         self._transport = None
         self._EStateCTCPSession = EState.Null
@@ -52,6 +54,7 @@ class CTCPSession(asyncio.protocols.Protocol):
 
     def on_recv_msg(self, oCMsg):
         '''
+        oCMsg msg.CMsg
         '''
         pass
 

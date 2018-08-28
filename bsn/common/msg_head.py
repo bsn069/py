@@ -74,5 +74,6 @@ class CMsgHead(object):
         self._cmd = int.from_bytes(byData[uIndex:uIndexEnd], 'little')
         uIndex = uIndexEnd
 
+        logging.info("{} ".format(self))
 
 file_import_tree.file_end(__name__)

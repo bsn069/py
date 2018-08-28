@@ -13,6 +13,7 @@ import enum
 class EState(enum.Enum):
     Init = 0
     WaitConnect = 1
+    Login = 2
 
 
 

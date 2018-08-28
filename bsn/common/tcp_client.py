@@ -42,6 +42,7 @@ class CTCPClient(object):
         self._CPort = None
 
         self._loop = loop
+        self._waiter_connect = None
 
     @property
     def loop(self):
@@ -87,7 +88,7 @@ class CTCPClient(object):
         self._EStateCTCPClient = EState.Connecting
         while self.estate_tcp_client() == EState.Connecting:
             try:
-                self._reader, self._writer = await asyncio.open_connection(str(self._CHost), str(self._CPort), loop=self._loop)
+                self._reader, self._writer = await asyncio.open_connection(str(self._CHost), str(self._CPort), loop=self.loop)
                 break
             except ConnectionRefusedError as e:
                 logging.error(e)
@@ -101,10 +102,28 @@ class CTCPClient(object):
         self._set_keep_alive()
         self._set_nodelay(True)
         self._EStateCTCPClient = EState.Connected
-        asyncio.ensure_future(self._recv_loop(), loop = self._loop)
-            
+        asyncio.ensure_future(self._recv_loop(), loop = self.loop)
+
+    async def waiter_connect(self):
+        self._waiter_connect = self.loop.create_future()
+        try:
+            await self._waiter_connect
+        finally:
+            self._waiter_connect = None
+
+    def wakeup_waiter_connect(self):
+        """Wakeup read*() functions waiting for data or EOF."""
+        if self._waiter_connect is None:
+            return
+        waiter = self._waiter_connect
+        if waiter is not None:
+            self._waiter_connect = None
+            if not waiter.cancelled():
+                waiter.set_result(None)
+
     async def _recv_loop(self):
         logging.info("{}".format(self))
+        self.wakeup_waiter_connect()
         try:
             oCMsgHead = msg_head.CMsgHead()
             while self.estate_tcp_client() == EState.Connected:

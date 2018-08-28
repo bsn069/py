@@ -55,7 +55,9 @@ class CAgentProxy(tcp_server.CTCPServer):
 
         while True:
             await asyncio.sleep(1)
+            # logging.info("{}".format(self))
             for uIndex in self._Index2CAgent:
+                # logging.info("{}".format(self))
                 self._Index2CAgent[uIndex]._update()
 
 file_import_tree.file_end(__name__)

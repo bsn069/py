@@ -33,6 +33,7 @@ class CAgentProxy(tcp_client.CTCPClient):
         '''
         await self.state_mgr.on_recv_msg(u16Cmd, byData)
 
+
     @property
     def state_mgr(self):
         return self._oCStateMgr

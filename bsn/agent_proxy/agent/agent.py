@@ -20,12 +20,16 @@ class CAgent(tcp_session.CTCPSession):
     def __init__(self, oCAgentProxy, uCreateIndex):
         """
         """
-        logging.info("{}".format(self))
+        logging.info("0{}".format(self))
+        logging.info("1{}".format(self))
         super().__init__()
+        logging.info("2{}".format(self))
 
         self._CAgentProxy = oCAgentProxy
         self._uCreateIndex = uCreateIndex
+        logging.info("{}".format(self))
         self._CStateMgr = state_mgr.CStateMgr(self)
+        logging.info("{}".format(self))
 
     def connection_made(self, transport):
         logging.info("{} {}".format(self, transport))
