@@ -1,8 +1,8 @@
 syntax = "proto3";  
-import 'comm.proto';
+import 'bsn/pb/comm.proto';
 package bsn.pb.test;  
   
-message MTest {  
+message MTest3 {  
     int32 v1 = 1;  
     comm.MTest v2 = 2;
     bsn.pb.comm.MTest v3 = 3;

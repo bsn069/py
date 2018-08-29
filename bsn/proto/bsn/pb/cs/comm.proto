@@ -1,0 +1,7 @@
+syntax = "proto3";  
+package bsn.pb.cs.comm;   
+  
+message MTest {  
+    int32 id = 1;  
+    string name = 2;  
+}  

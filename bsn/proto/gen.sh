@@ -1,7 +1,7 @@
 #!/bin/bash
 
-cd ../pb
-rm -rf *.py
+cd ..
+rm -rf pb
 
-cd ../proto
-protoc -I./ --python_out=./../pb *.proto
+cd proto
+protoc -I./  --python_out=./../../  bsn/pb/*.proto bsn/pb/*/*.proto
