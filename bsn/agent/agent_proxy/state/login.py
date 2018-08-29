@@ -7,14 +7,16 @@ file_import_tree.file_begin(__name__)
 import asyncio
 import enum
 import logging
-from bsn.agent.agent_proxy.state import base_
 from bsn.agent.agent_proxy import state_enum
 from bsn.agent.agent_proxy import state_mgr
 from bsn.common.port import CPort
 from bsn.common.host import CHost
 from bsn.pb import comm_pb2
+from bsn.pb.agent2agentproxy import login_pb2
+from bsn.pb.agent2agentproxy import cmd_pb2
+from bsn.common.state_mgr import state
 
-class CState(base_.CState):
+class CState(state.CState):
     """ 
     """
     C_EState = state_enum.EState.Login
@@ -24,24 +26,12 @@ class CState(base_.CState):
         """
         super().__init__(oOwner)
 
-    def enter(self):
-        logging.info("{}".format(self))
+    def _enter(self, oCStatePre):
+        logging.info("{} oCStatePre={}".format(self, oCStatePre))
 
-        oMTest = comm_pb2.MTest()
-        oMTest.id = 1
-        oMTest.name = 'abc'
-        print(oMTest)
-        byOut = oMTest.SerializeToString()
-        print(byOut)
-        oMTest2 = comm_pb2.MTest()
-        oMTest2.ParseFromString(byOut)
-        print(oMTest2)
-
-        self.send_pkg(1, byOut)
-
-
-    def leave(self):
-        logging.info("{}".format(self))
+        oMReq = login_pb2.MReq()
+        oMReq.id = self.owner.owner.id
+        self.send_pb(cmd_pb2.EMsgId_Login, oMReq) 
 
 
 def create_func(oOwner):

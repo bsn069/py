@@ -1,7 +1,0 @@
-syntax = "proto3";  
-package bsn.pb.ss.comm;   
-  
-message MTest {  
-    int32 id = 1;  
-    string name = 2;  
-}  

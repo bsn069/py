@@ -73,6 +73,10 @@ class CTCPSession(asyncio.protocols.Protocol):
         
     def send_pkg(self, cmd, data):
         logging.info("{} cmd={}".format(self, cmd))
-        self._CMsgSendPkg.send_pkg(cmd, data)
+        return self._CMsgSendPkg.send_pkg(cmd, data)
+
+    def send_pb(self, u16Cmd, oPbMsg):
+        logging.info("{} u16Cmd={} oPbMsg={}".format(self, u16Cmd, oPbMsg))
+        return self._CMsgSendPkg.send_pb(u16Cmd, oPbMsg)
 
 file_import_tree.file_end(__name__)        

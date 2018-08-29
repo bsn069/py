@@ -49,6 +49,11 @@ class CMsgSendPkg(object):
         self._uSendByteCount = self._uSendByteCount + len(byData)
         return self._funSendData(byData)
 
+    def send_pb(self, u16Cmd, oPbMsg):
+        logging.info("{} u16Cmd={} oPbMsg={}".format(self, u16Cmd, oPbMsg))
+        byOut = oPbMsg.SerializeToString()
+        self.send_pkg(u16Cmd, byOut)
+        
     # def __str__(self):
     #     return 'CMsgSendPkg[pkg={} byte={}]'.format(self._uSendPkgCount, self._uSendByteCount)
 

@@ -24,6 +24,14 @@ class CAgent(object):
         self._loop = loop
         self._Index2CAgentProxy = {}
         self._uCreateIndex = 0
+        self._u32Id = 1
+
+    @property
+    def id(self):
+        '''
+        return u32
+        '''
+        return self._u32Id
 
     def _create_agent_proxy(self):
         '''

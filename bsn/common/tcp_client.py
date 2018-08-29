@@ -57,6 +57,10 @@ class CTCPClient(object):
         logging.info("{} u16Cmd={}".format(self, u16Cmd))
         return self._CMsgSendPkg.send_pkg(u16Cmd, byData)
 
+    def send_pb(self, u16Cmd, oPbMsg):
+        logging.info("{} u16Cmd={} oPbMsg={}".format(self, u16Cmd, oPbMsg))
+        return self._CMsgSendPkg.send_pb(u16Cmd, oPbMsg)
+
     def estate_tcp_client(self):
         return self._EStateCTCPClient
 

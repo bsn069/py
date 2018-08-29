@@ -1,0 +1,16 @@
+syntax = "proto3";  
+// import 'bsn/pb/agent2agentproxy/login.proto';
+package bsn.pb.agent2agentproxy.login;  
+  
+enum EMsgId {
+    EMsgId_Null = 0;
+    
+    EMsgId_Login = 1;
+}
+
+enum EMsgId2 {
+    Null = 0;
+
+    Login = 1;
+}
+

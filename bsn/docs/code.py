@@ -21,6 +21,8 @@ class CBaseClass(object):
     以object作为继承类
     '''
 
+    C_eEState = None # 类变量 C_开头
+
     def __init__(self, u32Id):  
         '''
         构造函数

@@ -10,6 +10,8 @@ import logging
 from bsn.agent_proxy.agent.state import base_
 from bsn.agent_proxy.agent import state_enum
 from bsn.agent_proxy.agent import state_mgr
+from bsn.pb.agent2agentproxy import login_pb2
+from bsn.pb.agent2agentproxy import cmd_pb2
 
 class CState(base_.CState):
     """ 
@@ -30,7 +32,12 @@ class CState(base_.CState):
 
     def on_recv_msg(self, oCMsg):
         logging.info("{} {}".format(self, oCMsg))
-        self.to_state(state_enum.EState.LoginSuccess)
+
+        if oCMsg.cmd == cmd_pb2.EMsgId_Login:
+            oMReq = login_pb2.MReq()
+            oMReq.ParseFromString(oCMsg.body)
+            logging.info("{} oMReq={}".format(self, oMReq))
+            self.to_state(state_enum.EState.LoginSuccess)
 
 def create_func(oCAgent):
     logging.info("{}".format(oCAgent))
