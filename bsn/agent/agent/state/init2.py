@@ -6,23 +6,20 @@ file_import_tree.file_begin(__name__)
 
 
 import logging
-from bsn.common.state_mgr.example import state_enum
-from bsn.common.state_mgr.example import state_mgr
+from bsn.agent.agent import state_enum
+from bsn.agent.agent import state_mgr
 from bsn.common.state_mgr import base_state
 
 class CState(base_state.CState):
     """ 
     """
-    C_eEState = state_enum.EState.Init
+    C_eEState = state_enum.EState.Init2
 
     def __init__(self, oOwner):
         """
         """
         super().__init__(oOwner)
 
-    def _enter(self, oCStatePre):
-        logging.info("{} oCStatePre={}".format(self, oCStatePre))
-        self.to_state(state_enum.EState.Init2)
 
 def create_func(oCOwner):
     logging.info("{}".format(oCOwner))

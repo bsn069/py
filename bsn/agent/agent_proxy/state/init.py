@@ -4,19 +4,16 @@
 from bsn.common import file_import_tree
 file_import_tree.file_begin(__name__)
 
-import asyncio
-import enum
+
 import logging
 from bsn.agent.agent_proxy import state_enum
 from bsn.agent.agent_proxy import state_mgr
-from bsn.common.port import CPort
-from bsn.common.host import CHost
-from bsn.common.state_mgr import state
+from bsn.common.state_mgr import base_state
 
-class CState(state.CState):
+class CState(base_state.CState):
     """ 
     """
-    C_EState = state_enum.EState.Init
+    C_eEState = state_enum.EState.Init
 
     def __init__(self, oOwner):
         """
@@ -24,8 +21,12 @@ class CState(state.CState):
         super().__init__(oOwner)
 
 
-def create_func(oOwner):
-    logging.info("{}".format(oOwner))
-    return CState(oOwner)
-state_mgr.CStateMgr.reg_state(CState.C_EState, create_func)
+    def _enter(self, oCStatePre):
+        logging.info("{} oCStatePre={}".format(self, oCStatePre))
+        self.to_state(state_enum.EState.WaitConnect)
+
+def create_func(oCOwner):
+    logging.info("{}".format(oCOwner))
+    return CState(oCOwner)
+state_mgr.CStateMgr.reg_state(CState.C_eEState, create_func)
 file_import_tree.file_end(__name__)

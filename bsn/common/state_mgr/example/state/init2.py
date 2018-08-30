@@ -20,6 +20,9 @@ class CState(base_state.CState):
         """
         super().__init__(oOwner)
 
+    def _enter(self, oCStatePre):
+        logging.info("{} oCStatePre={}".format(self, oCStatePre))
+ 
 
 def create_func(oCOwner):
     logging.info("{}".format(oCOwner))

@@ -6,11 +6,12 @@ file_import_tree.file_begin(__name__)
 
 import logging
 
-from bsn.common.state_mgr.example import state_enum
-from bsn.common.state_mgr.example import state_mgr
+from bsn.agent.agent_proxy import state_enum
+from bsn.agent.agent_proxy import state_mgr
 from bsn.common.state_mgr import base_state_owner
+from bsn.common import tcp_client
 
-class CStateOwner(base_state_owner.CStateOwner):
+class CStateOwner(base_state_owner.CStateOwner, tcp_client.CTCPClient):
     """ 
     """
 
@@ -21,7 +22,14 @@ class CStateOwner(base_state_owner.CStateOwner):
         base_state_owner.CStateOwner.__init__(self, oCOwner, u64CreateIndex = u64CreateIndex, u32Id=u32Id)
         self._oCStateMgr = state_mgr.CStateMgr(self)
 
-        # self.to_state(state_enum.EState.Init)
+        tcp_client.CTCPClient.__init__(self, oCOwner.loop)
+
+        
+
+    def set_host_port(self, oCHost, oCPort):
+        logging.info("{}".format(self))
+        self._CHost = oCHost
+        self._CPort = oCPort
 
 
 

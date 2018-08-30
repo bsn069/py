@@ -5,13 +5,16 @@ from bsn.common import file_import_tree
 file_import_tree.file_begin(__name__)
 
 import enum
+ 
+
+
 
 
 class EState(enum.Enum):
     Init = 0
-    Init2 = 1
-    WaitConnect = 2
-    Login = 3
+    WaitConnect = 1
+    Login = 2
+
 
 
 file_import_tree.file_end(__name__)
