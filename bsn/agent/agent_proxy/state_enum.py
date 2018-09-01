@@ -10,6 +10,8 @@ import enum
 class EState(enum.Enum):
     Init = 0
     Init2 = 1
+    Login = 2
+    WaitConnect = 3
 
 
 file_import_tree.file_end(__name__)

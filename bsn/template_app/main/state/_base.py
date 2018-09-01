@@ -5,16 +5,15 @@ from bsn.common import file_import_tree
 file_import_tree.file_begin(__name__)
 import os
 f_strFileName = os.path.split(__file__)[1]
+f_strFileBaseName = os.path.splitext(f_strFileName)[0]
 
 import logging
-from bsn.agent.agent_proxy import state_enum
-from bsn.agent.agent_proxy import state_mgr
 from bsn.common.state_mgr import base_state
 
 class CState(base_state.CState):
     """ 
     """
-    C_eEState = None
+    C_strState = None
 
     def __init__(self, oCStateMgr):
         """

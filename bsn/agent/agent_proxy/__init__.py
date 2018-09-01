@@ -6,11 +6,12 @@
 from bsn.common import file_import_tree
 file_import_tree.file_begin(__name__)
  
-
-import bsn.agent.agent_proxy.state_enum
-import bsn.agent.agent_proxy.state_mgr
-import bsn.agent.agent_proxy.state
-import bsn.agent.agent_proxy.state_owner
+from bsn.common import import_util
+import_util.import_init_dir(__package__, __file__)
 
 
 file_import_tree.file_end(__name__)
+
+
+
+

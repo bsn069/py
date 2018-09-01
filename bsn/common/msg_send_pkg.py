@@ -41,7 +41,7 @@ class CMsgSendPkg(object):
             bool 
                 is send ok
         '''
-        logging.info("{} cmd={}".format(self, cmd))
+        logging.info("{} cmd={} data={}".format(self, cmd, data))
         self._uSendPkgCount = self._uSendPkgCount + 1
         self._CMsgForSend.cmd = cmd
         self._CMsgForSend.body = data

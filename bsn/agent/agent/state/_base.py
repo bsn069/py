@@ -3,10 +3,10 @@
 
 from bsn.common import file_import_tree
 file_import_tree.file_begin(__name__)
-
+import os
+f_strFileName = os.path.split(__file__)[1]
 
 import logging
-from bsn.agent.agent import state_enum
 from bsn.agent.agent import state_mgr
 from bsn.common.state_mgr import base_state
 

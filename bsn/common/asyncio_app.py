@@ -7,7 +7,7 @@ file_import_tree.file_begin(__name__)
 import logging
 import asyncio
 
-logging.basicConfig(level = logging.INFO, format = '%(asctime)s %(levelname)s %(filename)s:%(lineno)d(%(funcName)s) %(message)s')
+# logging.basicConfig(level = logging.INFO, format = 'bb %(asctime)s %(levelname)s %(filename)s:%(lineno)d(%(funcName)s) %(message)s')
 
 def main(create_app, uTestSec):
     '''

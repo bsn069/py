@@ -3,6 +3,9 @@
 
 from bsn.common import file_import_tree
 file_import_tree.file_begin(__name__)
+import os
+f_strFileName = os.path.split(__file__)[1]
+f_strFileBaseName = os.path.splitext(f_strFileName)[0]
 
 import logging
 
@@ -11,7 +14,7 @@ class CState(object):
     """ 
     """
 
-    C_eEState = None
+    C_strState = f_strFileBaseName
 
     def __init__(self, oCStateMgr):
         """
@@ -28,12 +31,11 @@ class CState(object):
     def owner(self):
         return self.state_mgr.owner
 
-    def to_state(self, eEStateTo):
+    def to_state(self, strState):
         '''
-        eEStateTo state_enum.EState.
         '''
-        logging.info("eEStateTo={}".format(eEStateTo))
-        self.state_mgr.to_state(eEStateTo)
+        logging.info("strState={}".format(strState))
+        self.state_mgr.to_state(strState)
 
     def _enter(self, oCStatePre):
         logging.info("{} oCStatePre={}".format(self, oCStatePre))

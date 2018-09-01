@@ -3,6 +3,9 @@
 
 from bsn.common import file_import_tree
 file_import_tree.file_begin(__name__)
+import os
+f_strFileName = os.path.split(__file__)[1]
+f_strFileBaseName = os.path.splitext(f_strFileName)[0]
 
 import logging
 
@@ -15,12 +18,11 @@ class CStateMgr(object):
     '''
     
     @classmethod
-    def reg_state(cls, eEState, funCreate):
+    def reg_state(cls, strState, funCreate):
         '''
-        eEState enum
         '''
-        logging.info("{} eEState={} {}".format(cls.__name__, eEState, funCreate))
-        cls.C_mapStateCreateFun[eEState.value] = funCreate
+        logging.info("{} strState={} {}".format(cls.__name__, strState, funCreate))
+        cls.C_mapStateCreateFun[strState] = funCreate
 
     def __init__(self, oCOwner):
         """
@@ -31,9 +33,9 @@ class CStateMgr(object):
         self._oCStateCur = None
 
         self._oCState = {}
-        for uIndex in self.C_mapStateCreateFun:
-            funcCreate = self.C_mapStateCreateFun[uIndex]
-            self._oCState[uIndex] = funcCreate(self)
+        for strState in self.C_mapStateCreateFun:
+            funcCreate = self.C_mapStateCreateFun[strState]
+            self._oCState[strState] = funcCreate(self)
 
     @property
     def state(self):
@@ -43,12 +45,12 @@ class CStateMgr(object):
     def owner(self):
         return self._oCOwner
 
-    def to_state(self, eEStateTo):
+    def to_state(self, strState):
         '''
         '''
-        logging.info("{} eEStateTo={}".format(self, eEStateTo))
+        logging.info("{} strState={}".format(self, strState))
         oCAgentStateOld = self.state 
-        oCAgentStateNew = self._oCState[eEStateTo.value]
+        oCAgentStateNew = self._oCState[strState]
         if oCAgentStateOld is oCAgentStateNew:
             return
         if oCAgentStateOld is not None:
