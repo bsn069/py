@@ -13,26 +13,27 @@ class CState(object):
 
     C_eEState = None
 
-    def __init__(self, oOwner):
+    def __init__(self, oCStateMgr):
         """
-        oOwner CAgentProxy
+        oCStateMgr CStateMgr
         """
-        logging.info("{}".format(self))
-        self._oOwner = oOwner 
-
-    @property
-    def owner(self):
-        return self._oOwner
+        logging.info("oCStateMgr={}".format(oCStateMgr))
+        self._oCStateMgr = oCStateMgr
 
     @property
     def state_mgr(self):
-        return self.owner.state_mgr
+        return self._oCStateMgr
 
-    def to_state(self, EState_To):
+    @property
+    def owner(self):
+        return self.state_mgr.owner
+
+    def to_state(self, eEStateTo):
         '''
-        EState_To state_enum.EState.
+        eEStateTo state_enum.EState.
         '''
-        self.owner.to_state(EState_To)
+        logging.info("eEStateTo={}".format(eEStateTo))
+        self.state_mgr.to_state(eEStateTo)
 
     def _enter(self, oCStatePre):
         logging.info("{} oCStatePre={}".format(self, oCStatePre))

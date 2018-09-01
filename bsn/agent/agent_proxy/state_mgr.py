@@ -12,13 +12,14 @@ class CStateMgr(base_state_mgr.CStateMgr):
     '''
     bsn.agent.agent_proxy.state_enum.EState
     '''
+    C_mapStateCreateFun = {}
+
 
     def __init__(self, oCOwner):
         """
         """
         logging.info("{}".format(oCOwner))
         super().__init__(oCOwner)
-        self.to_state(state_enum.EState.Init)
 
 
 file_import_tree.file_end(__name__)

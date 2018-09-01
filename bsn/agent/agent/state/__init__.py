@@ -6,6 +6,7 @@ from bsn.common import file_import_tree
 file_import_tree.file_begin(__name__)
 
 
+import bsn.agent.agent.state._base
 import bsn.agent.agent.state.init
 import bsn.agent.agent.state.init2
 import bsn.agent.agent.state.run

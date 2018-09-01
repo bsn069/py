@@ -8,24 +8,21 @@ file_import_tree.file_begin(__name__)
 import logging
 from bsn.agent.agent_proxy import state_enum
 from bsn.agent.agent_proxy import state_mgr
-from bsn.agent.agent_proxy.state import _base
+from bsn.common.state_mgr import base_state
 
-class CState(_base.CState):
+class CState(base_state.CState):
     """ 
     """
     C_eEState = state_enum.EState.Init2
 
-    def __init__(self, oCStateMgr):
+    def __init__(self, oOwner):
         """
         """
-        super().__init__(oCStateMgr)
+        super().__init__(oOwner)
 
-    def _enter(self, oCStatePre):
-        logging.info("{} oCStatePre={}".format(self, oCStatePre))
-        # self.to_state(state_enum.EState.Init2)
 
-def create_func(oCStateMgr):
-    logging.info("oCStateMgr={}".format(oCStateMgr))
-    return CState(oCStateMgr)
+def create_func(oCOwner):
+    logging.info("{}".format(oCOwner))
+    return CState(oCOwner)
 state_mgr.CStateMgr.reg_state(CState.C_eEState, create_func)
 file_import_tree.file_end(__name__)

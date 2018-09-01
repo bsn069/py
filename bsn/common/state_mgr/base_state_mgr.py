@@ -13,31 +13,35 @@ class CStateMgr(object):
     '''
     bsn.agent.agent_proxy.state_enum.EState
     '''
-    StateCreateFun = {}
     
-    @staticmethod
-    def reg_state(eEState, funCreate):
+    @classmethod
+    def reg_state(cls, eEState, funCreate):
         '''
         eEState enum
         '''
-        logging.info("{} {}".format(eEState, funCreate))
-        CStateMgr.StateCreateFun[eEState.value] = funCreate
+        logging.info("{} eEState={} {}".format(cls.__name__, eEState, funCreate))
+        cls.C_mapStateCreateFun[eEState.value] = funCreate
 
     def __init__(self, oCOwner):
         """
         """
-        logging.info("{}".format(self))
+        logging.info("{} oCOwner={}".format(self, oCOwner))
+
+        self._oCOwner = oCOwner
+        self._oCStateCur = None
 
         self._oCState = {}
-        for uIndex in CStateMgr.StateCreateFun:
-            funcCreate = CStateMgr.StateCreateFun[uIndex]
-            self._oCState[uIndex] = funcCreate(oCOwner)
-
-        self._oCStateCur = None
+        for uIndex in self.C_mapStateCreateFun:
+            funcCreate = self.C_mapStateCreateFun[uIndex]
+            self._oCState[uIndex] = funcCreate(self)
 
     @property
     def state(self):
         return self._oCStateCur
+
+    @property
+    def owner(self):
+        return self._oCOwner
 
     def to_state(self, eEStateTo):
         '''
@@ -52,11 +56,7 @@ class CStateMgr(object):
         self._oCStateCur = oCAgentStateNew
         oCAgentStateNew._enter(oCAgentStateOld)
 
-    async def on_recv_msg(self, u16Cmd, byData):
-        '''
-        '''
-        logging.info("{} u16Cmd={} byData={}".format(self, u16Cmd, byData))
-        await self.state.on_recv_msg(u16Cmd, byData)
+
 
 
 

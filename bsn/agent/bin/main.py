@@ -10,12 +10,12 @@ from bsn.common import asyncio_app
 from bsn.agent.agent import state_owner
 from bsn.agent.agent import state_enum
 
-class CApp(state_owner.CStateOwner):
+class CApp(object):
 
     def __init__(self, loop):
         logging.info("{}".format(self))
         self._loop = loop
-        state_owner.CStateOwner.__init__(self, self)
+        self._app = state_owner.CStateOwner(self)
 
     @property
     def loop(self):
@@ -25,7 +25,7 @@ class CApp(state_owner.CStateOwner):
         logging.basicConfig(level = logging.INFO, format = '%(asctime)s %(levelname)s %(filename)s:%(lineno)d(%(funcName)s) %(message)s')
         file_import_tree.file_print()
         logging.info("{}".format(self))
-        self.to_state(state_enum.EState.Init)
+        self._app.to_state(state_enum.EState.Init)
 
         while True:
             await asyncio.sleep(1)
