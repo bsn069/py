@@ -19,24 +19,41 @@ class CStateOwner(base_state_owner.CStateOwner, tcp_accept.CTCPAccept):
     """ 
     """
 
-    def __init__(self, oCOwner, u64CreateIndex = 0, oCApp = None):
+    def __init__(self, oCOwner, oCApp, u64CreateIndex):
         """
         """
-        logging.info("oCOwner={} u64CreateIndex={}".format(oCOwner, u64CreateIndex))
-        base_state_owner.CStateOwner.__init__(self, oCOwner, u64CreateIndex = u64CreateIndex, oCApp = oCApp)
+        logging.info("oCOwner={}".format(oCOwner, u64CreateIndex))
+        base_state_owner.CStateOwner.__init__(self, oCOwner, oCApp, u64CreateIndex)
         tcp_accept.CTCPAccept.__init__(self, self.app.loop)
         self._oCStateMgr = state_mgr.CStateMgr(self)
 
-        self._u64SubModuleCreateIndex = 0
-        self._listAgentProxy = []
+        self._u64AgentCreateIndex = 0
+        self._mapId2Agents = {}
+        self._mapIndex2Agents = {}
 
     def _create_session(self):
         '''
         '''
         logging.info("{}".format(self))
-        self._u64SubModuleCreateIndex = self._u64SubModuleCreateIndex + 1
-        oModule = agent.CStateOwner(self, self._u64SubModuleCreateIndex, oCApp=self.app)
-        self._listAgentProxy.append(oModule)
-        return  oModule
+        self._u64AgentCreateIndex = self._u64AgentCreateIndex + 1
+        oAgent = agent.CStateOwner(self, self.app, self._u64AgentCreateIndex)
+        self._mapIndex2Agents[self._u64AgentCreateIndex] = oAgent
+        return  oAgent
+
+    def get_agent_by_id(self, u32Id):
+        return self._mapId2Agents[u32Id]
+
+    def get_agent_by_index(self, u64Index):
+        return self._mapIndex2Agents[u64Index]
+
+    def remove_agent(self, oAgent):
+        logging.info("oAgent={}".format(oAgent))
+        # delete self._mapIndex2Agents[oAgent.create_index]
+        # delete self._mapId2Agents[oAgent.id]
+
+    def set_agent_id(self, oAgent, u32Id):
+        logging.info("oAgent={} u32Id={}".format(oAgent, u32Id))
+        oAgent.set_id(u32Id)
+        self._mapId2Agents[u32Id] = oAgent
 
 file_import_tree.file_end(__name__)

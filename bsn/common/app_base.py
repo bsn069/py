@@ -26,7 +26,7 @@ class CApp(object):
         self._mapConfig = None
         self._load_config('default')
 
-        self._main = state_owner.CStateOwner(self, oCApp = self)
+        self._main = state_owner.CStateOwner(self, self, 0)
 
     @property
     def loop(self):

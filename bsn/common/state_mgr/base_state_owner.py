@@ -13,13 +13,13 @@ class CStateOwner(object):
     """ 
     """
 
-    def __init__(self, oCOwner, u64CreateIndex = 0, u32Id = 0, oCApp = None):
+    def __init__(self, oCOwner, oCApp, u64CreateIndex):
         """
         """
-        logging.info("oCOwner={} u64CreateIndex={} u32Id={}".format(oCOwner, u64CreateIndex, u32Id))
+        logging.info("oCOwner={} u64CreateIndex={}".format(oCOwner, u64CreateIndex))
         self._oCOwner = oCOwner
         self._u64CreateIndex = u64CreateIndex
-        self._u32Id = u32Id
+        self._u32Id = None
         self._oCStateMgr = None
         self._oCApp = oCApp
 

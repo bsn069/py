@@ -19,12 +19,12 @@ class CStateOwner(base_state_owner.CStateOwner, tcp_client.CTCPClient):
     """ 
     """
 
-    def __init__(self, oCOwner, u64CreateIndex = 0, oCApp = None):
+    def __init__(self, oCOwner, oCApp, u64CreateIndex):
         """
         """
         u32Id = 1
         logging.info("oCOwner={} u64CreateIndex={} u32Id={}".format(oCOwner, u64CreateIndex, u32Id))
-        base_state_owner.CStateOwner.__init__(self, oCOwner, u64CreateIndex = u64CreateIndex, u32Id=u32Id, oCApp = oCApp)
+        base_state_owner.CStateOwner.__init__(self, oCOwner, oCApp, u64CreateIndex)
         self._oCStateMgr = state_mgr.CStateMgr(self)
 
         tcp_client.CTCPClient.__init__(self, self.app.loop)
