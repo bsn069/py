@@ -22,14 +22,8 @@ class CState(_base.CState):
         """
         super().__init__(oCStateMgr)
 
-    def _enter(self, oCStatePre):
-        logging.info("{} oCStatePre={}".format(self, oCStatePre))
-        self.owner._u32Id = self.app.config('id')
-        self.to_state('listen')
-
 def create_func(oCStateMgr):
     logging.info("oCStateMgr={}".format(oCStateMgr))
     return CState(oCStateMgr)
 state_mgr.CStateMgr.reg_state(CState.C_strState, create_func)
-
 file_import_tree.file_end(__name__)

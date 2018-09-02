@@ -21,7 +21,7 @@ class CMsgRecvPkg(object):
     def __init__(self, funOnRecvMsg):
         """
         funOnRecvMsg
-            def (msg.CMsg())
+            def (u16cmd, byData)
         """
         logging.info("{}".format(self))
 
@@ -34,7 +34,7 @@ class CMsgRecvPkg(object):
         self._uRecvByteCount = 0
 
     def _wait_head(self):
-        self._funOnRecvMsg(self._CMsg)
+        self._funOnRecvMsg(self._CMsg.head.cmd, self._CMsg.body)
         self._CMsg = msg.CMsg()
         self._bWaitHead = True
         self._uWaitLength = self._CMsg.head.Bit

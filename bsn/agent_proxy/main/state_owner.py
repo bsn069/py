@@ -12,35 +12,30 @@ import logging
 from . import state_mgr
 from bsn.common.state_mgr import base_state_owner
 
-from ..sub_module import state_owner as sub_module
+from ..agent import state_owner as agent
+from bsn.common import tcp_accept
 
-class CStateOwner(base_state_owner.CStateOwner):
+class CStateOwner(base_state_owner.CStateOwner, tcp_accept.CTCPAccept):
     """ 
     """
 
     def __init__(self, oCOwner, u64CreateIndex = 0, oCApp = None):
         """
         """
-        u32Id = 1
-        logging.info("oCOwner={} u64CreateIndex={} u32Id={}".format(oCOwner, u64CreateIndex, u32Id))
-        base_state_owner.CStateOwner.__init__(self, oCOwner, u64CreateIndex = u64CreateIndex, u32Id=u32Id, oCApp = oCApp)
+        logging.info("oCOwner={} u64CreateIndex={}".format(oCOwner, u64CreateIndex))
+        base_state_owner.CStateOwner.__init__(self, oCOwner, u64CreateIndex = u64CreateIndex, oCApp = oCApp)
+        tcp_accept.CTCPAccept.__init__(self, self.app.loop)
         self._oCStateMgr = state_mgr.CStateMgr(self)
 
         self._u64SubModuleCreateIndex = 0
         self._listAgentProxy = []
 
-    def send_pkg(self, u16Cmd, byData):
-        logging.info("{} u16Cmd={} byData={}".format(self, u16Cmd, byData))
-
-    def send_pb(self, u16Cmd, oPbMsg):
-        logging.info("{} u16Cmd={} oPbMsg={}".format(self, u16Cmd, oPbMsg))
-
-    def create_module_sub(self):
+    def _create_session(self):
         '''
         '''
         logging.info("{}".format(self))
         self._u64SubModuleCreateIndex = self._u64SubModuleCreateIndex + 1
-        oModule = sub_module.CStateOwner(self, self._u64SubModuleCreateIndex, oCApp=self.app)
+        oModule = agent.CStateOwner(self, self._u64SubModuleCreateIndex, oCApp=self.app)
         self._listAgentProxy.append(oModule)
         return  oModule
 

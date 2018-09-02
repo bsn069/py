@@ -52,24 +52,20 @@ class CTCPSession(asyncio.protocols.Protocol):
         logging.info("{} type(data):{} len(data):{}".format(self, type(data), len(data)))
         self._CMsgRecvPkg.proc_data(data)
 
-    def on_recv_msg(self, oCMsg):
+    def on_recv_msg(self, u16Cmd, byData):
         '''
-        oCMsg msg.CMsg
         '''
         pass
 
     def eof_received(self):
         logging.info("{}".format(self))
 
-    def flush(self):
-        self._transport.write(self._write_buff)
-
     def close(self):
         return self._transport.close()
 
     def send(self, data):
         logging.info("{} {}".format(self, data))
-        self._write_buff.extend(data)
+        self._transport.write(data)
         
     def send_pkg(self, cmd, data):
         logging.info("{} cmd={}".format(self, cmd))
