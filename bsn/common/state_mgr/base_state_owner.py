@@ -13,7 +13,7 @@ class CStateOwner(object):
     """ 
     """
 
-    def __init__(self, oCOwner, u64CreateIndex = 0, u32Id = 0):
+    def __init__(self, oCOwner, u64CreateIndex = 0, u32Id = 0, oCApp = None):
         """
         """
         logging.info("oCOwner={} u64CreateIndex={} u32Id={}".format(oCOwner, u64CreateIndex, u32Id))
@@ -21,6 +21,7 @@ class CStateOwner(object):
         self._u64CreateIndex = u64CreateIndex
         self._u32Id = u32Id
         self._oCStateMgr = None
+        self._oCApp = oCApp
 
     @property
     def create_index(self):
@@ -35,11 +36,22 @@ class CStateOwner(object):
         return self._oCOwner
 
     @property
+    def app(self):
+        return self._oCApp
+
+    @property
+    def main(self):
+        return self.app.main
+
+    @property
     def id(self):
         '''
         return u32
         '''
         return self._u32Id
+
+    def set_id(self, u32Id):
+        self._u32Id = u32Id
 
     def to_state(self, strState):
         '''

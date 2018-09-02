@@ -11,10 +11,8 @@ import logging
 import importlib
 state_mgr = importlib.import_module('{}_mgr'.format(__package__))
 from . import _base
-
 from bsn.common.port import CPort
 from bsn.common.host import CHost
-import asyncio
 
 class CState(_base.CState):
     """ 
@@ -25,14 +23,6 @@ class CState(_base.CState):
         """
         """
         super().__init__(oCStateMgr)
-
-    def _enter(self, oCStatePre):
-        logging.info("{} oCStatePre={}".format(self, oCStatePre))
-        asyncio.ensure_future(self.connect(), loop=self.owner.loop)
-
-    async def connect(self):
-        await self.owner.connect()
-        self.to_state('login')
 
 def create_func(oCStateMgr):
     logging.info("oCStateMgr={}".format(oCStateMgr))

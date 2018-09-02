@@ -31,6 +31,14 @@ class CState(object):
     def owner(self):
         return self.state_mgr.owner
 
+    @property
+    def app(self):
+        return self.owner.app
+
+    @property
+    def main(self):
+        return self.owner.main
+
     def to_state(self, strState):
         '''
         '''
@@ -45,6 +53,12 @@ class CState(object):
 
     def on_recv_msg(self, u16Cmd, byData):
         logging.info("{} u16Cmd={}".format(self, u16Cmd))
+
+    def get_pb(self, cls, byData):
+        oPBMsg = cls()
+        oPBMsg.ParseFromString(byData)
+        logging.info("{} cls={} oPBMsg={}".format(self, cls, oPBMsg))
+        return oPBMsg
 
     def send_pkg(self, u16Cmd, byData):
         logging.info("{} u16Cmd={} byData={}".format(self, u16Cmd, byData))

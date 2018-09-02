@@ -1,0 +1,13 @@
+syntax = "proto3";  
+// import 'bsn/pb/agent2agentproxy/login.proto';
+package bsn.pb.agent_agentproxy.login;  
+  
+message M2AgentProxy_LoginReq {  
+    uint32 id = 1;  
+}  
+
+message M2Agent_LoginRes {  
+    string ip = 1;
+    uint32 port = 2;
+}  
+

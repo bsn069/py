@@ -1,8 +1,0 @@
-syntax = "proto3";  
-// import 'bsn/pb/agent2agentproxy/login.proto';
-package bsn.pb.agent2agentproxy.login;  
-  
-message MReq {  
-    uint32 id = 1;  
-}  
-

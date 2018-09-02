@@ -18,12 +18,12 @@ class CStateOwner(base_state_owner.CStateOwner):
     """ 
     """
 
-    def __init__(self, oCOwner, u64CreateIndex = 0):
+    def __init__(self, oCOwner, u64CreateIndex = 0, oCApp = None):
         """
         """
         u32Id = 1
         logging.info("oCOwner={} u64CreateIndex={} u32Id={}".format(oCOwner, u64CreateIndex, u32Id))
-        base_state_owner.CStateOwner.__init__(self, oCOwner, u64CreateIndex = u64CreateIndex, u32Id=u32Id)
+        base_state_owner.CStateOwner.__init__(self, oCOwner, u64CreateIndex = u64CreateIndex, u32Id=u32Id, oCApp = oCApp)
         self._oCStateMgr = state_mgr.CStateMgr(self)
 
         self._u64SubModuleCreateIndex = 0
@@ -40,7 +40,7 @@ class CStateOwner(base_state_owner.CStateOwner):
         '''
         logging.info("{}".format(self))
         self._u64SubModuleCreateIndex = self._u64SubModuleCreateIndex + 1
-        oModule = sub_module.CStateOwner(self, self._u64SubModuleCreateIndex)
+        oModule = sub_module.CStateOwner(self, self._u64SubModuleCreateIndex, oCApp=self.app)
         self._listAgentProxy.append(oModule)
         return  oModule
 

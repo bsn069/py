@@ -8,13 +8,9 @@ f_strFileName = os.path.split(__file__)[1]
 f_strFileBaseName = os.path.splitext(f_strFileName)[0]
 
 import logging
-import importlib
-state_mgr = importlib.import_module('{}_mgr'.format(__package__))
-from . import _base
-
-from bsn.common.port import CPort
-from bsn.common.host import CHost
-import asyncio
+from bsn.agent.agent_proxy import state_enum
+from bsn.agent.agent_proxy import state_mgr
+from bsn.agent.agent_proxy.state import _base
 
 class CState(_base.CState):
     """ 
@@ -28,11 +24,7 @@ class CState(_base.CState):
 
     def _enter(self, oCStatePre):
         logging.info("{} oCStatePre={}".format(self, oCStatePre))
-        asyncio.ensure_future(self.connect(), loop=self.owner.loop)
-
-    async def connect(self):
-        await self.owner.connect()
-        self.to_state('login')
+        # self.to_state(state_enum.EState.Init2)
 
 def create_func(oCStateMgr):
     logging.info("oCStateMgr={}".format(oCStateMgr))

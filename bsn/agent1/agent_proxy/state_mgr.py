@@ -3,15 +3,14 @@
 
 from bsn.common import file_import_tree
 file_import_tree.file_begin(__name__)
-import os
-f_strFileName = os.path.split(__file__)[1]
-f_strFileBaseName = os.path.splitext(f_strFileName)[0]
 
 import logging
+from bsn.agent.agent_proxy import state_enum
 from bsn.common.state_mgr import base_state_mgr
 
 class CStateMgr(base_state_mgr.CStateMgr):
     '''
+    bsn.agent.agent_proxy.state_enum.EState
     '''
     C_mapStateCreateFun = {}
 

@@ -8,9 +8,9 @@ f_strFileName = os.path.split(__file__)[1]
 f_strFileBaseName = os.path.splitext(f_strFileName)[0]
 
 import logging
-from bsn.agent.agent_proxy import state_enum
-from bsn.agent.agent_proxy import state_mgr
-from bsn.agent.agent_proxy.state import _base
+import importlib
+state_mgr = importlib.import_module('{}_mgr'.format(__package__))
+from . import _base
 
 class CState(_base.CState):
     """ 
@@ -30,4 +30,5 @@ def create_func(oCStateMgr):
     logging.info("oCStateMgr={}".format(oCStateMgr))
     return CState(oCStateMgr)
 state_mgr.CStateMgr.reg_state(CState.C_strState, create_func)
+
 file_import_tree.file_end(__name__)

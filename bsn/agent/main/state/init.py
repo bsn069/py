@@ -8,8 +8,9 @@ f_strFileName = os.path.split(__file__)[1]
 f_strFileBaseName = os.path.splitext(f_strFileName)[0]
 
 import logging
-from bsn.common.state_mgr.example import state_mgr
-from bsn.common.state_mgr.example.state import _base
+import importlib
+state_mgr = importlib.import_module('{}_mgr'.format(__package__))
+from . import _base
 
 class CState(_base.CState):
     """ 
@@ -23,10 +24,13 @@ class CState(_base.CState):
 
     def _enter(self, oCStatePre):
         logging.info("{} oCStatePre={}".format(self, oCStatePre))
-        self.to_state('init2')
+        id = self.owner.app.config('id')
+        self.owner.set_id(id)
+        self.to_state('connect_proxy')
 
 def create_func(oCStateMgr):
     logging.info("oCStateMgr={}".format(oCStateMgr))
     return CState(oCStateMgr)
 state_mgr.CStateMgr.reg_state(CState.C_strState, create_func)
+
 file_import_tree.file_end(__name__)

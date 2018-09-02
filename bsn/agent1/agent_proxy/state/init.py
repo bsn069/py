@@ -8,8 +8,9 @@ f_strFileName = os.path.split(__file__)[1]
 f_strFileBaseName = os.path.splitext(f_strFileName)[0]
 
 import logging
-from bsn.common.state_mgr.example import state_mgr
-from bsn.common.state_mgr.example.state import _base
+from bsn.agent.agent_proxy import state_enum
+from bsn.agent.agent_proxy import state_mgr
+from bsn.agent.agent_proxy.state import _base
 
 class CState(_base.CState):
     """ 
@@ -23,7 +24,7 @@ class CState(_base.CState):
 
     def _enter(self, oCStatePre):
         logging.info("{} oCStatePre={}".format(self, oCStatePre))
-        # self.to_state('')
+        self.to_state('wait_connect')
 
 def create_func(oCStateMgr):
     logging.info("oCStateMgr={}".format(oCStateMgr))
