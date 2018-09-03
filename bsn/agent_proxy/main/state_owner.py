@@ -41,15 +41,16 @@ class CStateOwner(base_state_owner.CStateOwner, tcp_accept.CTCPAccept):
         return  oAgent
 
     def get_agent_by_id(self, u32Id):
-        return self._mapId2Agents[u32Id]
+        return self._mapId2Agents.get(u32Id)
 
     def get_agent_by_index(self, u64Index):
-        return self._mapIndex2Agents[u64Index]
+        return self._mapIndex2Agents.get(u64Index)
 
     def remove_agent(self, oAgent):
         logging.info("oAgent={}".format(oAgent))
-        # delete self._mapIndex2Agents[oAgent.create_index]
-        # delete self._mapId2Agents[oAgent.id]
+        self._mapIndex2Agents.pop(oAgent.create_index)
+        if oAgent.id is not None:
+            self._mapId2Agents.pop(oAgent.id)
 
     def set_agent_id(self, oAgent, u32Id):
         logging.info("oAgent={} u32Id={}".format(oAgent, u32Id))

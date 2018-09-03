@@ -22,6 +22,10 @@ class CState(_base.CState):
         """
         super().__init__(oCStateMgr)
 
+    def _enter(self, oCStatePre):
+        logging.info("{} oCStatePre={}".format(self, oCStatePre))
+        self.main.remove_agent(self.owner)
+
 
 def create_func(oCStateMgr):
     logging.info("oCStateMgr={}".format(oCStateMgr))

@@ -12,15 +12,36 @@ logging.basicConfig(level = logging.INFO, format = '%(message)s \n\t %(levelname
 
 from bsn.common import asyncio_app
 from bsn.common import app_base as app
+from optparse import OptionParser
+from optparse import OptionGroup
+
+def _parse_arg():
+    parse = OptionParser()
+    group = OptionGroup(parse, 
+        'App Options',
+        'app special config')
+
+    # group.add_option('-c','--config',
+    #     metavar='configDir',
+    #     action='store',
+    #     dest='config',
+    #     type="string",
+    #     default = 'default',
+    #     help='config dir name')
+
+    parse.add_option_group(group)
+    return app.get_args(parse)
 
 class CApp(app.CApp):
+    def __init__(self, loop, *args):
+        logging.info("{} args={}".format(self, args))
+        super().__init__(loop, f_strAppName, *args)
 
-    def __init__(self, loop):
-        logging.info("{}".format(self))
-        super().__init__(loop, f_strAppName)
-
-def create_app(loop):
-    return CApp(loop)
+def create_app(loop, *args):
+    logging.info("args={}".format(args))
+    return CApp(loop, *args)
 
 if __name__ == '__main__':
-    asyncio_app.main(create_app, 60000)
+    args = _parse_arg()
+    logging.info("args={}".format(args))
+    asyncio_app.main(create_app, args)

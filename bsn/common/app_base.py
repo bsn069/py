@@ -12,20 +12,38 @@ f_strAppName = __file__.split(os.path.sep)[-3]
 import logging
 import importlib
 import asyncio
+from optparse import OptionGroup
+
+def get_args(parse):
+    group = OptionGroup(parse, 
+        'Base App Options',
+        'all app common config')
+
+    group.add_option('-c','--config',
+        metavar='configDir',
+        action='store',
+        dest='config',
+        type="string",
+        default = 'default',
+        help='config dir name')
+
+    parse.add_option_group(group)
+    args = parse.parse_args()
+    logging.info("agrs={}".format(args[0]))
+    return args[0]
 
 class CApp(object):
 
-    def __init__(self, loop, strAppName):
+    def __init__(self, loop, strAppName, args):
         logging.info("{} strAppName={}".format(self, strAppName))
         self._loop = loop
         self._strAppName = strAppName
 
+        self._args = args
+        self._mapConfig = None
+
         strAppPackagePath = 'bsn.{}.main.state_owner'.format(strAppName)
         state_owner = importlib.import_module(strAppPackagePath)
-
-        self._mapConfig = None
-        self._load_config('default')
-
         self._main = state_owner.CStateOwner(self, self, 0)
 
     @property
@@ -53,8 +71,9 @@ class CApp(object):
         self._mapConfig = mConfig.f_mapConfig
 
     async def run(self):
-        file_import_tree.file_print()
         logging.info("{}".format(self))
+        file_import_tree.file_print()
+        self._load_config(self._args.config)
         self._main.to_state('init')
 
         while True:

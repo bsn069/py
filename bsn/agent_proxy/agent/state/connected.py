@@ -34,14 +34,14 @@ class CState(_base.CState):
             logging.info("{} oM2AgentProxy_LoginReq={}".format(self, oM2AgentProxy_LoginReq))
 
             oM2Agent_LoginRes = login_pb2.M2Agent_LoginRes()
-            oM2Agent_LoginRes.ip = 'this is ip'
-            oM2Agent_LoginRes.port = 10001
 
             oAgent = self.main.get_agent_by_id(oM2AgentProxy_LoginReq.id)
             if oAgent is None:
                 self.main.set_agent_id(self.owner, oM2AgentProxy_LoginReq.id)
+                oM2Agent_LoginRes.ip = 'this is ip'
+                oM2Agent_LoginRes.port = 10001
             else:
-                oM2Agent_LoginRes.ip = 'had exist'
+                oM2Agent_LoginRes.err = 'had exist'
 
             logging.info("{} oM2Agent_LoginRes={}".format(self, oM2Agent_LoginRes))
             self.send_pb(cmd_pb2.EMsgId2Agent_LoginRes, oM2Agent_LoginRes) 
