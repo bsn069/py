@@ -1,0 +1,17 @@
+syntax = "proto3";  
+// import 'bsn/pb/agent2agentproxy/login.proto';
+package bsn.pb.agent_agentproxy.trans;  
+  
+
+message M2AgentProxy_ToAgent { 
+    uint32  u32ToAgentId = 1;
+    bytes   byData = 2; 
+    uint32  u32Cmd = 3;
+}  
+
+message M2Agent_FromAgent { 
+    uint32  u32FromAgentId = 1;
+    bytes   byData = 2; 
+    uint32  u32Cmd = 3;
+}  
+

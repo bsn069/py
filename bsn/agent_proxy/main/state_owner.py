@@ -14,6 +14,8 @@ from bsn.common.state_mgr import base_state_owner
 
 from ..agent import state_owner as agent
 from bsn.common import tcp_accept
+from bsn.pb.agent_agentproxy import trans_pb2
+from bsn.pb.agent_agentproxy import cmd_pb2
 
 class CStateOwner(base_state_owner.CStateOwner, tcp_accept.CTCPAccept):
     """ 
@@ -56,5 +58,17 @@ class CStateOwner(base_state_owner.CStateOwner, tcp_accept.CTCPAccept):
         logging.info("oAgent={} u32Id={}".format(oAgent, u32Id))
         oAgent.set_id(u32Id)
         self._mapId2Agents[u32Id] = oAgent
+
+    def send_pkg_from_agent_to_agent(self, u32FromAgentId, u32ToAgentId, u32Cmd, byData):
+        logging.info("form {} to {} trans cmd {}".format(u32FromAgentId, u32ToAgentId, u32Cmd))
+        oToAgent = self.get_agent_by_id(u32ToAgentId)
+        if oToAgent is None:
+            return
+
+        oM2Agent_FromAgent = trans_pb2.M2Agent_FromAgent()
+        oM2Agent_FromAgent.u32FromAgentId = u32FromAgentId
+        oM2Agent_FromAgent.u32Cmd = u32Cmd
+        oM2Agent_FromAgent.byData = byData
+        oToAgent.send_pb(cmd_pb2.EMsgId2Agent_FromAgent, oM2Agent_FromAgent)
 
 file_import_tree.file_end(__name__)

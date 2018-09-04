@@ -6,12 +6,15 @@ enum EMsgId2AgentProxy {
     EMsgId2AgentProxy_Null = 0;
     
     EMsgId2AgentProxy_LoginReq = 1;
+
+    EMsgId2AgentProxy_ToAgent = 2;
 }
 
 enum EMsgId2Agent {
     EMsgId2Agent_Null = 0;
     
     EMsgId2Agent_LoginRes = 1;
+    EMsgId2Agent_FromAgent = 2;
 }
 
  

@@ -14,7 +14,9 @@ from . import _base
 
 
 from bsn.pb.agent_agentproxy import login_pb2
+from bsn.pb.agent_agentproxy import trans_pb2
 from bsn.pb.agent_agentproxy import cmd_pb2
+
 
 class CState(_base.CState):
     """ 
@@ -30,8 +32,10 @@ class CState(_base.CState):
         logging.info("{} u16Cmd={}".format(self, u16Cmd))
 
         if u16Cmd == cmd_pb2.EMsgId2AgentProxy_LoginReq:
-            oM2AgentProxy_LoginReq = self.get_pb(login_pb2.M2AgentProxy_LoginReq, byData)
-            logging.info("{} oM2AgentProxy_LoginReq={}".format(self, oM2AgentProxy_LoginReq))
+            oM2AgentProxy_LoginReq = self.get_pb(
+                login_pb2.M2AgentProxy_LoginReq, byData)
+            logging.info("{} oM2AgentProxy_LoginReq={}".format(
+                self, oM2AgentProxy_LoginReq))
 
             oM2Agent_LoginRes = login_pb2.M2Agent_LoginRes()
 
@@ -43,15 +47,20 @@ class CState(_base.CState):
             else:
                 oM2Agent_LoginRes.err = 'had exist'
 
-            logging.info("{} oM2Agent_LoginRes={}".format(self, oM2Agent_LoginRes))
-            self.send_pb(cmd_pb2.EMsgId2Agent_LoginRes, oM2Agent_LoginRes) 
+            logging.info("{} oM2Agent_LoginRes={}".format(
+                self, oM2Agent_LoginRes))
+            self.send_pb(cmd_pb2.EMsgId2Agent_LoginRes, oM2Agent_LoginRes)
 
             if oAgent is None:
                 self.to_state('run')
 
+
+
 def create_func(oCStateMgr):
     logging.info("oCStateMgr={}".format(oCStateMgr))
     return CState(oCStateMgr)
+
+
 state_mgr.CStateMgr.reg_state(CState.C_strState, create_func)
 
 file_import_tree.file_end(__name__)

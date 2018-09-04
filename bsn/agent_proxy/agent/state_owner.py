@@ -40,6 +40,7 @@ class CStateOwner(base_state_owner.CStateOwner, tcp_session.CTCPSession):
         self.to_state('disconnect')
         tcp_session.CTCPSession.connection_lost(self, exc)
 
+        
 
 
 file_import_tree.file_end(__name__)
