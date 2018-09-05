@@ -29,7 +29,7 @@ class CState(_base.CState):
         logging.info("{} oCStatePre={}".format(self, oCStatePre))
 
         oM2AgentProxy_LoginReq = login_pb2.M2AgentProxy_LoginReq()
-        oM2AgentProxy_LoginReq.id = self.owner.main.id
+        oM2AgentProxy_LoginReq.id = self.main.id
         logging.info("{} oM2AgentProxy_LoginReq={}".format(self, oM2AgentProxy_LoginReq))
         self.send_pb(cmd_pb2.EMsgId2AgentProxy_LoginReq, oM2AgentProxy_LoginReq) 
 
@@ -41,7 +41,12 @@ class CState(_base.CState):
         if u16Cmd == cmd_pb2.EMsgId2Agent_LoginRes:
             oM2Agent_LoginRes = self.get_pb(login_pb2.M2Agent_LoginRes, byData)
             logging.info("{} oM2Agent_LoginRes={}".format(self, oM2Agent_LoginRes))
-            self.to_state('run')
+            if oM2Agent_LoginRes.err is not None:
+                self.to_state('close')
+            else:
+                self.owner.set_id(oM2Agent_LoginRes.u32AgentProxyId)
+                self.main.set_id(oM2Agent_LoginRes.u32AgentId)
+                self.to_state('run')
 
 
 

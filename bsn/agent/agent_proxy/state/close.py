@@ -11,8 +11,9 @@ import logging
 import importlib
 state_mgr = importlib.import_module('{}_mgr'.format(__package__))
 from . import _base
-from bsn.common.port import CPort
-from bsn.common.host import CHost
+
+from bsn.pb.agent_agentproxy import trans_pb2
+from bsn.pb.agent_agentproxy import cmd_pb2
 
 class CState(_base.CState):
     """ 
@@ -24,13 +25,7 @@ class CState(_base.CState):
         """
         super().__init__(oCStateMgr)
 
-    def _enter(self, oCStatePre):
-        logging.info("{} oCStatePre={}".format(self, oCStatePre))
-        
-        oMudule = self.owner.create_module_agent_proxy()
-        oMudule.set_host_port(self.app.config('host'), self.app.config('port'))
-        oMudule.to_state('init')
-        self.to_state('run')
+
 
 def create_func(oCStateMgr):
     logging.info("oCStateMgr={}".format(oCStateMgr))

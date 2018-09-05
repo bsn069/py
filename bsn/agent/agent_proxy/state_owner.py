@@ -43,4 +43,13 @@ class CStateOwner(base_state_owner.CStateOwner, tcp_client.CTCPClient):
         oM2AgentProxy_ToAgent.byData = byData
         self.send_pb(cmd_pb2.EMsgId2AgentProxy_ToAgent, oM2AgentProxy_ToAgent)
 
+    def send_pb_to_agent(self, u32ToAgentId, u32Cmd, oPbMsg):
+        '''
+        '''
+        byDatat = oPbMsg.SerializeToString()
+        self.send_pkg_to_agent(u32ToAgentId, u32Cmd, byDatat)
+
+    def close(self):
+        pass
+
 file_import_tree.file_end(__name__)

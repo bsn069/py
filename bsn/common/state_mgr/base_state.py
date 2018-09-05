@@ -56,7 +56,8 @@ class CState(object):
 
     def get_pb(self, cls, byData):
         oPBMsg = cls()
-        oPBMsg.ParseFromString(byData)
+        if byData is not None:
+            oPBMsg.ParseFromString(byData)
         logging.info("{} cls={} oPBMsg={}".format(self, cls, oPBMsg))
         return oPBMsg
 

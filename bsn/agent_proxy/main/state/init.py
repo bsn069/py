@@ -11,6 +11,7 @@ import logging
 import importlib
 state_mgr = importlib.import_module('{}_mgr'.format(__package__))
 from . import _base
+from bsn.pb.agent_agentproxy import define_pb2
 
 class CState(_base.CState):
     """ 

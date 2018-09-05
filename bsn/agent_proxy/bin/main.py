@@ -8,7 +8,7 @@ f_strAppName = __file__.split(os.path.sep)[-3]
 
 import asyncio
 import logging
-logging.basicConfig(level = logging.INFO, format = '%(message)s \n\t %(levelname)s  %(pathname)s:%(lineno)d(%(funcName)s)' )
+logging.basicConfig(level = logging.INFO, format = '(%(funcName)s)%(message)s \n\t %(levelname)s  %(pathname)s:%(lineno)d' )
 
 from bsn.common import asyncio_app
 from bsn.common import app_base as app

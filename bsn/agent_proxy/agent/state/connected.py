@@ -28,32 +28,9 @@ class CState(_base.CState):
         """
         super().__init__(oCStateMgr)
 
-    def on_recv_msg(self, u16Cmd, byData):
-        logging.info("{} u16Cmd={}".format(self, u16Cmd))
-
-        if u16Cmd == cmd_pb2.EMsgId2AgentProxy_LoginReq:
-            oM2AgentProxy_LoginReq = self.get_pb(
-                login_pb2.M2AgentProxy_LoginReq, byData)
-            logging.info("{} oM2AgentProxy_LoginReq={}".format(
-                self, oM2AgentProxy_LoginReq))
-
-            oM2Agent_LoginRes = login_pb2.M2Agent_LoginRes()
-
-            oAgent = self.main.get_agent_by_id(oM2AgentProxy_LoginReq.id)
-            if oAgent is None:
-                self.main.set_agent_id(self.owner, oM2AgentProxy_LoginReq.id)
-                oM2Agent_LoginRes.ip = 'this is ip'
-                oM2Agent_LoginRes.port = 10001
-            else:
-                oM2Agent_LoginRes.err = 'had exist'
-
-            logging.info("{} oM2Agent_LoginRes={}".format(
-                self, oM2Agent_LoginRes))
-            self.send_pb(cmd_pb2.EMsgId2Agent_LoginRes, oM2Agent_LoginRes)
-
-            if oAgent is None:
-                self.to_state('run')
-
+    def _enter(self, oCStatePre):
+        logging.info("{} oCStatePre={}".format(self, oCStatePre))
+        self.to_state('wait_login')
 
 
 def create_func(oCStateMgr):

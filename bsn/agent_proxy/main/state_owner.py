@@ -16,10 +16,13 @@ from ..agent import state_owner as agent
 from bsn.common import tcp_accept
 from bsn.pb.agent_agentproxy import trans_pb2
 from bsn.pb.agent_agentproxy import cmd_pb2
+from bsn.common.u32 import u32
+from bsn.pb.agent_agentproxy import define_pb2
 
 class CStateOwner(base_state_owner.CStateOwner, tcp_accept.CTCPAccept):
     """ 
     """
+    C_u32AutoAgentIdMax = (1 << (32 - define_pb2.EGlobal_AgentProxyIdBitMax)) - 1
 
     def __init__(self, oCOwner, oCApp, u64CreateIndex):
         """
@@ -32,6 +35,8 @@ class CStateOwner(base_state_owner.CStateOwner, tcp_accept.CTCPAccept):
         self._u64AgentCreateIndex = 0
         self._mapId2Agents = {}
         self._mapIndex2Agents = {}
+
+        self._u32AutoAgentIdIndex = 0
 
     def _create_session(self):
         '''
@@ -70,5 +75,13 @@ class CStateOwner(base_state_owner.CStateOwner, tcp_accept.CTCPAccept):
         oM2Agent_FromAgent.u32Cmd = u32Cmd
         oM2Agent_FromAgent.byData = byData
         oToAgent.send_pb(cmd_pb2.EMsgId2Agent_FromAgent, oM2Agent_FromAgent)
+
+    def gen_auto_agent_id(self):
+        if self._u32AutoAgentIdIndex >= CStateOwner.C_u32AutoAgentIdMax:
+            return None
+
+        self._u32AutoAgentIdIndex = self._u32AutoAgentIdIndex + 1
+        u32AgentId = (self._u32AutoAgentIdIndex << define_pb2.EGlobal_AgentProxyIdBitMax) + self.id
+        return u32AgentId
 
 file_import_tree.file_end(__name__)

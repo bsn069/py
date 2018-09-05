@@ -7,8 +7,8 @@ message M2AgentProxy_LoginReq {
 }  
 
 message M2Agent_LoginRes {  
-    string ip = 1;
-    uint32 port = 2;
     string err = 3;
+    uint32 u32AgentProxyId = 1;
+    uint32 u32AgentId = 2;
 }  
 

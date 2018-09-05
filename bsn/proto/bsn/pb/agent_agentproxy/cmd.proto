@@ -5,9 +5,11 @@ package bsn.pb.agent_agentproxy.cmd;
 enum EMsgId2AgentProxy {
     EMsgId2AgentProxy_Null = 0;
     
-    EMsgId2AgentProxy_LoginReq = 1;
+    EMsgId2AgentProxy_CheckId = 3;
+    EMsgId2AgentProxy_GetId = 1;
+    EMsgId2AgentProxy_LoginReq = 2;
 
-    EMsgId2AgentProxy_ToAgent = 2;
+    EMsgId2AgentProxy_ToAgent = 100;
 }
 
 enum EMsgId2Agent {

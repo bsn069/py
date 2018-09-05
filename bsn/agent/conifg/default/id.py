@@ -8,6 +8,6 @@ f_strFileName = os.path.split(__file__)[1]
 f_strFileBaseName = os.path.splitext(f_strFileName)[0]
 from .config import f_mapConfig
 
-f_mapConfig['id'] =  1002
+f_mapConfig['id'] =  0
 
 file_import_tree.file_end(__name__)
