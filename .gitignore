@@ -1,3 +1,8 @@
 *.pyc
 ljt/*
 bsn/pb
+*.o
+*.vscode
+
+bsn/swig/*/build
+bsn/swig/*/py
