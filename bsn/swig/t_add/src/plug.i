@@ -1,7 +1,7 @@
-%module t
+%module plug
  
 %{
-#include "t.h"
+#include "plug.h"
 %}
  
 int add(int ia, int ib);

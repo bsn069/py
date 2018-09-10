@@ -1,12 +1,13 @@
 #!/bin/bash
 
-V_ModuleNam=t_add
-
+rm -rf build
 mkdir build
-swig -c++ -python -o ./build/t_wrap.cpp src/t.i 
+swig -c++ -python -o ./build/plug_wrap.cpp src/plug.i 
 
+rm -rf py
 mkdir py
 mv ./build/*.py ./py/
 
 python3 setup.py build_ext --inplace
-mv *.so ./py/_t_add.so
+mv *.so ./py/_plug.so
+
