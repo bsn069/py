@@ -35,4 +35,5 @@ setup (name = f_strPlugName,
        description = """Simple swig example from docs""",
        ext_modules = [example_module],
        py_modules = [f_strPlugName],
+       extra_compile_args = ['-std=c++17'],
        )
