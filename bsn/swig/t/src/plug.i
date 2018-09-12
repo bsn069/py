@@ -8,13 +8,6 @@
 %typemap(in) int32_t,uint32_t {
     $1 = PyInt_AsLong($input);
 }
-%typemap(in) void* {
-    $1 = PyLong_AsVoidPtr($input);
-}
-
-%typemap(out) void* {
-   $result = PyLong_FromVoidPtr($1);
-}
 
 int shm_new(int32_t key, uint32_t size);
 int shm_get_id(int32_t key);
