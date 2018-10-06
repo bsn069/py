@@ -4,7 +4,7 @@
 import unittest
 from bsn.common import u8
 from bsn.common import err
-from bsn.swig.shm.py import plug
+# from bsn.swig.shm.py import plug
 from ctypes import * 
 
 import os
@@ -53,9 +53,10 @@ class Test(unittest.TestCase):
         self.assertEqual(iRet, 0)
 
         iAddr = plug.shm_attach(iShmId)
-        print(iAddr)
+        print('u8',iAddr)
         pvAddr = cast(iAddr+3, POINTER(c_uint8))
-        print(pvAddr.contents)
+        print('u8', pvAddr.contents)
+        print('u8', pvAddr.contents.value)
         iRet = plug.shm_detach(iAddr)
         self.assertEqual(iRet, 0)
 
