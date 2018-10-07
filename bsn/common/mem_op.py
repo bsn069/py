@@ -73,5 +73,14 @@ def get_i64(iAddr):
 def set_i64(iAddr, i64):
     pvAddr = cast(iAddr, POINTER(c_int64))
     pvAddr.contents.value = i64
+
+def get_string(iAddr):
+    pvAddr = cast(iAddr, POINTER(c_char_p))
+    return pvAddr.contents.value
+
+def set_string(iAddr, strValue):
+    pvAddr = cast(iAddr, POINTER(c_char_p))
+    pvAddr.contents = c_char_p(strValue)
+
  
 file_import_tree.file_end(__name__)

@@ -237,6 +237,32 @@ class Test(unittest.TestCase):
             value = mem_op.get_i64(iAddr)
             self.assertEqual(value, outValue)
 
+    def test_string(self):
+        testValues = [
+            (b'a',b'a'),
+            (b'1ab',b'1ab'),
+            (b'21ab2',b'21ab2'),
+        ]
+
+        u64Step = 0
+        for i in range(len(testValues)):
+            inValue = testValues[i][0]
+            iAddr = self._iAddr + u64Step
+            u64Step = u64Step + len(inValue)
+            mem_op.set_string(iAddr, inValue)
+            # print(u64Step)
+
+        u64Step = 0
+        for i in range(len(testValues)):
+            outValue = testValues[i][1]
+            iAddr = self._iAddr + u64Step
+            u64Step = u64Step + len(outValue)
+            print(u64Step)
+            value = mem_op.get_string(iAddr)
+            print(value)
+            print(str(value))
+            # self.assertEqual(value, outValue)
+
         
 
 if __name__ == '__main__':
